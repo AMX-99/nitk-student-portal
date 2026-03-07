@@ -8,8 +8,10 @@ import { getMe ,
   enterMarks ,
   getCourseResults ,
   getCourseDetails ,
-  updateCourse ,
-  changeTeacherPassword} from '../controllers/teacher.controller.js';
+  updateCourseProgress ,
+  changeTeacherPassword,
+  getAllTeachersPublic,
+  getPublicTeacherProfile} from '../controllers/teacher.controller.js';
 import { body, query } from 'express-validator';
 
 const router = Router();
@@ -22,7 +24,7 @@ router.get('/courses/:id/students', getCourseStudents);
 router.post('/results/enter', enterMarks);
 router.get('/results/course/:courseId', getCourseResults);
 router.get('/courses/:id', getCourseDetails);
-router.patch('/courses/:id', updateCourse);
+router.patch('/courses/:id', updateCourseProgress);
 router.post(
   '/attendance/mark',
   [
@@ -36,8 +38,8 @@ router.post(
   ],
   markAttendance
 );
-router.get('/', verifyJWT, getAllTeachersPublic);
-router.get('/:id/public', verifyJWT, getPublicTeacherProfile);
+router.get('/', getAllTeachersPublic);
+router.get('/:id/public', getPublicTeacherProfile);
 router.patch('/me/password', changeTeacherPassword);
 
 export default router;

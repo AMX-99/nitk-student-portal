@@ -1,6 +1,8 @@
 import Razorpay from 'razorpay';
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 import crypto from 'crypto';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,

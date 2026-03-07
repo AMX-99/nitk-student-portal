@@ -1,8 +1,16 @@
-import { supabaseAdmin } from "../config/supabase.js";
+import supabaseAdmin from "../config/supabase.js";
 
-const getStudentId = async (authId) => {
-  const { data, error } = await supabaseAdmin
-    .from("students")
+export const getStudentId = async (authId) => {
+  const { data, error } = await supabaseAdmin.from("students")
+    .select("id")
+    .eq("auth_id", authId)
+    .single();
+  if (error || !data) throw new Error("Student not found");
+  return data.id;
+};
+
+export const getStudentByAuthId = async (authId) => {
+  const { data, error } = await supabaseAdmin.from("students")
     .select("id")
     .eq("auth_id", authId)
     .single();
@@ -11,8 +19,7 @@ const getStudentId = async (authId) => {
 };
 
 export const getProfile = async (authId) => {
-  const { data, error } = await supabaseAdmin
-    .from("students")
+  const { data, error } = await supabaseAdmin.from("students")
     .select(
       `
       *,
@@ -63,16 +70,14 @@ const computeAcademicYear = (batchYear, semester) => {
 };
 
 export const getCourses = async (authId) => {
-  const { data: student, error: studentError } = await supabaseAdmin
-    .from("students")
+  const { data: student, error: studentError } = await supabaseAdmin.from("students")
     .select("id, batch_year, current_semester")
     .eq("auth_id", authId)
     .single();
   if (studentError || !student) throw new Error("Student not found");
   const { id: studentId, batch_year, current_semester } = student;
   const academicYear = computeAcademicYear(batch_year, current_semester);
-  const { data, error } = await supabaseAdmin
-    .from("enrollments")
+  const { data, error } = await supabaseAdmin.from("enrollments")
     .select(
       `
       course:courses(id, code, name, credits),
@@ -188,8 +193,7 @@ export const getFees = async (authId) => {
 // GET payment history
 export const getPayments = async (authId) => {
   const studentId = await getStudentId(authId);
-  const { data, error } = await supabaseAdmin
-    .from("payments")
+  const { data, error } = await supabaseAdmin.from("payments")
     .select(
       `
       id,amount,

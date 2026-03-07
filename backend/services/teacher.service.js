@@ -1,6 +1,15 @@
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 
-const getTeacherId = async (authId) => {
+export const getTeacherId = async (authId) => {
+  const { data, error } = await supabaseAdmin.from('teachers')
+    .select('id')
+    .eq('auth_id', authId)
+    .single();
+  if (error || !data) throw new Error('Teacher not found');
+  return data.id;
+};
+
+export const getTeacherByAuthId = async (authId) => {
   const { data, error } = await supabaseAdmin.from('teachers')
     .select('id')
     .eq('auth_id', authId)
@@ -50,7 +59,7 @@ export const getTeacherCourses = async (authId) => {
       section,
       academic_year,
       semester,
-      progress,
+      syllabus_progress,
       courses (
         id,
         name,

@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 
 export const createAssignment = async (data) => {
   const { teacher_id, course_id, section, academic_year, semester } = data;

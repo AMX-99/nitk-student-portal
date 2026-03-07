@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 
 export const listTimetableSlots = async (filters) => {
   let query = supabaseAdmin.from('timetable_slots')

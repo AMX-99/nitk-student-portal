@@ -31,7 +31,7 @@ router.get('/me/attendance', getAttendance);
 router.get('/me/results', getResults);
 router.get('/me/fees', getFees);
 router.get('/me/payments', getPayments);
-router.get('/:id', verifyJWT, getStudentFullProfileForTeacher);
+router.get('/:id', getStudentFullProfileForTeacher);
 router.get('/:id/public', getPublicStudentProfile);
 router.patch('/me/password', validate(passwordValidation), changeStudentPassword);
 

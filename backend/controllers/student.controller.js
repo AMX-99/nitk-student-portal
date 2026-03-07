@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 import * as studentService from '../services/student.service.js';
 
 // GET /students/me
@@ -98,7 +98,7 @@ export const getStudentFullProfileForTeacher = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (req.user.role === 'student') {
-      const student = await studentService.getStudentByAuthId(req.user.id);
+      const student = await studentService.getStudentId(req.user.id);
       if (student && student.id === id) {
         const fullProfile = await studentService.getFullStudentById(id);
         return res.json({ data: fullProfile });

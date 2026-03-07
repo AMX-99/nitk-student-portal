@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 
 export const listStudents = async (filters) => {
   let query = supabaseAdmin.from('students')
@@ -7,7 +7,6 @@ export const listStudents = async (filters) => {
       student_category, income_slab, income_verified, is_active,
       departments!inner (id, name, code)
     `, { count: 'exact' });
-
   if (filters.department_id) query = query.eq('department_id', filters.department_id);
   if (filters.batch_year) query = query.eq('batch_year', filters.batch_year);
   if (filters.semester) query = query.eq('current_semester', filters.semester);
@@ -47,7 +46,6 @@ export const createStudent = async (studentData) => {
     })
     .select()
     .single();
-
   if (error) throw error;
   return data;
 };
@@ -68,7 +66,6 @@ export const deleteStudent = async (id) => {
     .eq('id', id)
     .select()
     .single();
-
   if (error) throw error;
   return data;
 };

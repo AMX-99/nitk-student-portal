@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 
 export const getStats = async () => {
   const { count: totalStudents } = await supabaseAdmin.from('students')

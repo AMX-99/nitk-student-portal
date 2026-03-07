@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 import { getAcademicYearFromBatch } from '../utils/academicYear.js';
 
 export const getMyTimetable = async (req, res, next) => {

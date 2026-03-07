@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 
 export const getAllCourses = async (filters = {}) => {
   let query = supabaseAdmin.from('courses')

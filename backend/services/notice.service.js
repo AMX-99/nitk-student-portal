@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 
 export const getNoticesForStudent = async (departmentId, semester) => {
   let query = supabaseAdmin.from('v_notices_with_author')

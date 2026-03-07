@@ -1,5 +1,5 @@
 import * as complaintService from '../services/complaint.service.js';
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 
 const getStudentIdFromAuth = async (authId) => {
   const { data, error } = await supabaseAdmin.from('students')

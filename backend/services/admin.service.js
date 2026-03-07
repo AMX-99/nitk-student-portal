@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 
 export const getAuthIdFromProfile = async (profileId) => {
   const { data: student, error: studentError } = await supabaseAdmin.from('students')

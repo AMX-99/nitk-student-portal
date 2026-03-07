@@ -1,47 +1,59 @@
-import * as timetableService from '../services/adminTimetable.service.js';
+import supabaseAdmin from '../config/supabase.js';
 
-export const listTimetableSlots = async (req, res, next) => {
-  try {
-    const result = await timetableService.listTimetableSlots(req.query);
-    res.json(result);
-  } catch (err) {
-    next(err);
-  }
+export const listExams = async (filters = {}) => {
+  let query = supabaseAdmin.from('exam_schedules')
+    .select(`
+      *,
+      course:courses (id, code, name)
+    `, { count: 'exact' });
+  if (filters.academic_year) query = query.eq('academic_year', filters.academic_year);
+  if (filters.semester) query = query.eq('semester', filters.semester);
+  if (filters.course_id) query = query.eq('course_id', filters.course_id);
+  if (filters.from_date) query = query.gte('exam_date', filters.from_date);
+  if (filters.to_date) query = query.lte('exam_date', filters.to_date);
+  const from = (filters.page - 1) * filters.limit;
+  const to = from + filters.limit - 1;
+  query = query.range(from, to).order('exam_date').order('start_time');
+  const { data, error, count } = await query;
+  if (error) throw error;
+  return { data, total: count, page: filters.page, limit: filters.limit };
 };
 
-export const createTimetableSlot = async (req, res, next) => {
-  try {
-    const slot = await timetableService.createTimetableSlot(req.body);
-    res.status(201).json(slot);
-  } catch (err) {
-    next(err);
-  }
+export const createExam = async (examData) => {
+  const { data, error } = await supabaseAdmin.from('exam_schedules')
+    .insert(examData)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
 };
 
-export const getTimetableSlot = async (req, res, next) => {
-  try {
-    const slot = await timetableService.getTimetableSlotById(req.params.id);
-    if (!slot) return res.status(404).json({ error: 'Timetable slot not found' });
-    res.json(slot);
-  } catch (err) {
-    next(err);
-  }
+export const getExamById = async (id) => {
+  const { data, error } = await supabaseAdmin.from('exam_schedules')
+    .select(`
+      *,
+      course:courses (id, code, name)
+    `)
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  return data;
 };
 
-export const updateTimetableSlot = async (req, res, next) => {
-  try {
-    const slot = await timetableService.updateTimetableSlot(req.params.id, req.body);
-    res.json(slot);
-  } catch (err) {
-    next(err);
-  }
+export const updateExam = async (id, updates) => {
+  const { data, error } = await supabaseAdmin.from('exam_schedules')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
 };
 
-export const deleteTimetableSlot = async (req, res, next) => {
-  try {
-    await timetableService.deleteTimetableSlot(req.params.id);
-    res.status(204).send();
-  } catch (err) {
-    next(err);
-  }
+export const deleteExam = async (id) => {
+  const { error } = await supabaseAdmin.from('exam_schedules')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+  return true;
 };

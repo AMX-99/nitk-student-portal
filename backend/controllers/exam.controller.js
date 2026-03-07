@@ -1,11 +1,10 @@
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 import { getAcademicYearFromBatch } from '../utils/academicYear.js';
 
 export const getMyExams = async (req, res, next) => {
   try {
     const { role, id } = req.user;
-    let examQuery = supabaseAdmin
-      .from('exam_schedules')
+    let examQuery = supabaseAdmin.from('exam_schedules')
       .select(`
         id, exam_date, start_time, end_time, room,
         course:course_id ( code, name ), section
@@ -75,7 +74,6 @@ export const getMyExams = async (req, res, next) => {
       room: exam.room,
       type: 'Theory' // Placeholder
     }));
-
     res.json({ data: formatted });
   } catch (err) {
     next(err);

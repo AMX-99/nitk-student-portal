@@ -1,5 +1,5 @@
 import * as noticeService from '../services/notice.service.js';
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 
 const getStudentContext = async (authId) => {
   const { data, error } = await supabaseAdmin.from('students')

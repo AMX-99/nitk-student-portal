@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../config/supabase.js';
+import supabaseAdmin from '../config/supabase.js';
 
 export const getTeachers = async (req, res, next) => {
   try {
@@ -7,7 +7,6 @@ export const getTeachers = async (req, res, next) => {
         id, name, email, phone, designation, office_hours, bio, research_url,
         department:department_id ( name, code )
       `)
-      .eq('is_active', true)
       .order('name');
     if (error) throw error;
     const formatted = data.map(teacher => {

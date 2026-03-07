@@ -8,6 +8,7 @@ import studentRoutes from './adminStudent.routes.js';
 import teacherRoutes from './adminTeacher.routes.js';
 import departmentRoutes from './adminDepartment.routes.js';
 import teachercourseRoutes from './adminTeacherCourse.routes.js';
+import enrollmentRoutes from './adminStudentEnrollment.routes.js';
 import timetableRoutes from './adminTimetable.routes.js';
 import examRoutes from './adminExam.routes.js';
 
@@ -18,6 +19,7 @@ router.use(checkRole('admin'));
 router.use('/students', studentRoutes);
 router.use('/teachers', teacherRoutes);
 router.use('/teachercourse', teachercourseRoutes);
+router.use('/enrollments', enrollmentRoutes);
 router.use('/department',departmentRoutes);
 router.use('/timetable', timetableRoutes);
 router.use('/exams', examRoutes);

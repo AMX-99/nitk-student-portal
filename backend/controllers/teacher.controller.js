@@ -1,5 +1,5 @@
 import * as teacherService from '../services/teacher.service.js';
-import { supabaseAdmin } from '../config/supabase.js'
+import supabaseAdmin from '../config/supabase.js'
 
 const getTeacherByAuthId = async (authId) => {
   const { data, error } = await supabaseAdmin.from('teachers')
