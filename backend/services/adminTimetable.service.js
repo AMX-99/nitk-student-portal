@@ -11,12 +11,14 @@ export const listTimetableSlots = async (filters) => {
   if (filters.semester) query = query.eq('semester', filters.semester);
   if (filters.section) query = query.eq('section', filters.section);
   if (filters.day_of_week !== undefined) query = query.eq('day_of_week', filters.day_of_week);
-  const from = (filters.page - 1) * filters.limit;
-  const to = from + filters.limit - 1;
+  const page = parseInt(filters.page) || 1;
+  const limit = parseInt(filters.limit) || 50;
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
   query = query.range(from, to).order('day_of_week').order('start_time');
   const { data, error, count } = await query;
   if (error) throw error;
-  return { data, total: count, page: filters.page, limit: filters.limit };
+  return { data, total: count, page, limit };
 };
 
 export const createTimetableSlot = async (slotData) => {

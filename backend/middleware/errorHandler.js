@@ -18,7 +18,8 @@ class AppError extends Error {
  */
 const errorHandler = (err, req, res, next) => {
   // Default values
-  let { statusCode = 500, message = 'Internal Server Error' } = err;
+  let statusCode = err.statusCode || err.status || 500;
+  let message = err.message || 'Internal Server Error';
 
   // If error is not an instance of AppError, it might be an unknown/unhandled error
   // You can log it for debugging

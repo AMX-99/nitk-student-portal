@@ -23,7 +23,7 @@ const limiter = ratelimit({
 app.use(cors({origin: process.env.CLIENT_URL || '*'}));
 app.use(helmet());
 app.use(express.json({limit: '10mb'}));   //request size
-app.use('/api',limiter);
+// app.use('/api',limiter);
 app.use('/api',routes);
 app.use((req,res)=>{
     res.status(404).json({error : 'Not Found'});

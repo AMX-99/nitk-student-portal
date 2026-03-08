@@ -57,7 +57,7 @@ export const verifyPaymentSignature = (orderId, paymentId, signature) => {
  * Update payment status to success after verification
  */
 export const markPaymentSuccess = async (paymentId, razorpayPaymentId, razorpaySignature) => {
-  const { data, error } = await supabaseAdmin
+  const { data: updatedPayment, error } = await supabaseAdmin
     .from('payments')
     .update({
       status: 'success',
@@ -70,7 +70,32 @@ export const markPaymentSuccess = async (paymentId, razorpayPaymentId, razorpayS
     .single();
 
   if (error) throw error;
-  return data;
+
+  // IMPORTANT BUG FIX: Also update the parent payment_demand record
+  if (updatedPayment && updatedPayment.demand_id) {
+    const { data: demand } = await supabaseAdmin
+      .from('payment_demands')
+      .select('paid_amount, total_amount')
+      .eq('id', updatedPayment.demand_id)
+      .single();
+      
+    if (demand) {
+      const newPaidAmount = Number(demand.paid_amount || 0) + Number(updatedPayment.amount);
+      const newDueAmount = Number(demand.total_amount) - newPaidAmount;
+      const newStatus = newDueAmount <= 0 ? 'paid' : 'partial';
+
+      await supabaseAdmin
+        .from('payment_demands')
+        .update({
+          paid_amount: newPaidAmount,
+          due_amount: newDueAmount,
+          status: newStatus
+        })
+        .eq('id', updatedPayment.demand_id);
+    }
+  }
+
+  return updatedPayment;
 };
 
 /**
@@ -94,7 +119,7 @@ export const handleWebhook = async (payload, signature) => {
     // Find our payment record by order_id
     const { data: existing } = await supabaseAdmin
       .from('payments')
-      .select('id')
+      .select('id, demand_id, amount')
       .eq('gateway_order_id', payment.order_id)
       .single();
 
@@ -107,6 +132,28 @@ export const handleWebhook = async (payload, signature) => {
           paid_at: new Date(),
         })
         .eq('id', existing.id);
+        
+      // Also update the parent payment_demand record
+      const { data: demand } = await supabaseAdmin
+        .from('payment_demands')
+        .select('paid_amount, total_amount')
+        .eq('id', existing.demand_id)
+        .single();
+        
+      if (demand) {
+        const newPaidAmount = Number(demand.paid_amount || 0) + Number(existing.amount);
+        const newDueAmount = Number(demand.total_amount) - newPaidAmount;
+        const newStatus = newDueAmount <= 0 ? 'paid' : 'partial';
+
+        await supabaseAdmin
+          .from('payment_demands')
+          .update({
+            paid_amount: newPaidAmount,
+            due_amount: newDueAmount,
+            status: newStatus
+          })
+          .eq('id', existing.demand_id);
+      }
     }
   }
 };

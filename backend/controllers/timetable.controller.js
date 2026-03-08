@@ -59,20 +59,8 @@ export const getMyTimetable = async (req, res, next) => {
 
     const { data: slots, error } = await query.order('day_of_week').order('start_time');
     if (error) throw error;
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const grouped = days.map((day, index) => ({
-      day,
-      slots: slots
-        .filter(slot => slot.day_of_week === index)
-        .map(slot => ({
-          time: slot.start_time.slice(0,5),
-          courseCode: slot.course?.code,
-          courseName: slot.course?.name,
-          room: slot.room
-        }))
-    }));
-
-    res.json({ data: grouped });
+    
+    res.json({ data: slots });
   } catch (err) {
     next(err);
   }

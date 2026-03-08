@@ -1,4 +1,5 @@
 import * as feeService from '../services/fee.service.js';
+import supabaseAdmin from '../config/supabase.js';
 
 export const getMyFees = async (req, res, next) => {
   try {

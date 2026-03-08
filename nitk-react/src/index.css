@@ -1,0 +1,132 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@theme {
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --color-orange: #FF6B35;
+  --color-blue: #4D9EFF;
+  --color-green: #2DD4A0;
+  --color-amber: #F5B93E;
+  --color-red: #FF4F6D;
+  --color-purple: #9D7FEA;
+}
+
+/* ── DARK THEME (default) ── */
+[data-theme="dark"] {
+  --bg: #07090E;
+  --s1: #0D1017;
+  --s2: #131720;
+  --s3: #1A1F2E;
+  --s4: #22283E;
+  --bd1: #1A1F2E;
+  --bd2: #252C40;
+  --bd3: #323C58;
+  --t1: #EEF0FF;
+  --t2: #8892B0;
+  --t3: #4A5270;
+  --card-shadow: none;
+}
+
+/* ── LIGHT THEME ── */
+[data-theme="light"] {
+  --bg: #F4F6FB;
+  --s1: #FFFFFF;
+  --s2: #F8F9FC;
+  --s3: #EFF1F8;
+  --s4: #E4E8F5;
+  --bd1: #E4E8F5;
+  --bd2: #D0D6EC;
+  --bd3: #B8C0DC;
+  --t1: #111827;
+  --t2: #4B5280;
+  --t3: #9099BE;
+  --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+* {
+  transition: background-color 0.35s, border-color 0.35s, color 0.15s;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--t1);
+  overflow: hidden;
+  height: 100vh;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--s1); }
+::-webkit-scrollbar-thumb { background: var(--bd3); border-radius: 3px; }
+
+/* ── RECHARTS OVERRIDES ── */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: var(--bd1) !important;
+}
+.recharts-text {
+  fill: var(--t3) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 11px !important;
+}
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: var(--s2) !important;
+  border: 1px solid var(--bd2) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.2) !important;
+}
+.recharts-tooltip-item {
+  color: var(--t1) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 12px !important;
+}
+.recharts-tooltip-label {
+  color: var(--t2) !important;
+  font-family: var(--font-body) !important;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes drawLine {
+  from { stroke-dashoffset: 500; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes arcIn {
+  from { stroke-dasharray: 0 999; }
+  to { stroke-dasharray: var(--target) 999; }
+}
+
+/* ── TOGGLE SWITCH ── */
+.toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: var(--s4);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+.toggle-switch.on {
+  background: var(--color-green);
+}
+.toggle-switch .knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+.toggle-switch.on .knob {
+  transform: translateX(20px);
+}

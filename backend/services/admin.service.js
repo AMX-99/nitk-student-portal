@@ -27,3 +27,34 @@ export const revokeUserSessions = async (authId) => {
   if (error) throw error;
   return true;
 };
+
+export const updateProfile = async (authId, updates) => {
+  const allowed = ['phone', 'name', 'profile_pic'];
+  const filtered = {};
+  for (const key of allowed) {
+    if (updates[key] !== undefined) filtered[key] = updates[key];
+  }
+  const { data, error } = await supabaseAdmin
+    .from("admins")
+    .update(filtered)
+    .eq("auth_id", authId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+export const generateAvatarUploadUrl = async (authId) => {
+  const fileName = `avatars/${authId}-${Date.now()}.jpg`;
+  const { data, error } = await supabaseAdmin.storage
+    .from("profiles")
+    .createSignedUploadUrl(fileName, {
+      upsert: true,
+      contentType: "image/*",
+    });
+  if (error) throw error;
+  const publicUrl = supabaseAdmin.storage
+    .from("profiles")
+    .getPublicUrl(fileName).data.publicUrl;
+  return { signedUrl: data.signedUrl, publicUrl };
+};

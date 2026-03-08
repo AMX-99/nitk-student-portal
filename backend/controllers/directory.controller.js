@@ -1,37 +1,66 @@
 import supabaseAdmin from '../config/supabase.js';
 
-export const getTeachers = async (req, res, next) => {
+export const getAllUsers = async (req, res, next) => {
   try {
-    const { data, error } = await supabaseAdmin.from('teachers')
-      .select(`
-        id, name, email, phone, designation, office_hours, bio, research_url,
-        department:department_id ( name, code )
-      `)
+    const { data: teachersData, error: tErr } = await supabaseAdmin.from('teachers')
+      .select('id, name, email, phone, designation, office_hours, bio, department:department_id(name, code)')
       .order('name');
-    if (error) throw error;
-    const formatted = data.map(teacher => {
-      const nameParts = teacher.name.split(' ');
-      const initials = nameParts.map(p => p[0]).join('').slice(0,2).toUpperCase();
-      const deptColor = {
-        CSE: 'var(--color-orange)',
-        ECE: 'var(--color-blue)',
-        ME: 'var(--color-green)',
-        CE: 'var(--color-amber)',
-        IT: 'var(--color-purple)',
-      }[teacher.department?.code] || 'var(--color-grey)';
+    if (tErr) throw tErr;
+
+    const { data: studentsData, error: sErr } = await supabaseAdmin.from('students')
+      .select('id, name, email, phone, roll_no, bio, current_semester, department:department_id(name, code)')
+      .order('name');
+    if (sErr) throw sErr;
+
+    const mappedTeachers = teachersData.map(t => {
+      const name = t.name || 'Unknown';
+      const nameParts = name.split(' ');
+      const initials = nameParts.map(p => p?.[0] || '').join('').slice(0,2).toUpperCase() || 'U';
+      const code = t.department?.code || '';
+      const deptColor = { CSE: 'var(--color-orange)', ECE: 'var(--color-blue)', ME: 'var(--color-green)', CE: 'var(--color-amber)', IT: 'var(--color-purple)' }[code] || 'var(--color-purple)';
       return {
-        name: teacher.name,
-        dept: teacher.department?.code,
-        designation: teacher.designation,
-        email: teacher.email,
-        phone: teacher.phone,
-        specialization: teacher.bio?.split('\n')[0] || '—',
+        id: t.id,
+        role: 'Teacher',
+        name: t.name,
+        dept: code || '—',
+        designation: t.designation || 'Faculty',
+        email: t.email,
+        phone: t.phone || '—',
+        specialization: t.bio?.split('\n')[0] || '—',
         initials,
         color: deptColor,
-        office: teacher.office_hours?.split('\n')[0] || '—'
+        office: t.office_hours?.split('\n')[0] || '—',
+        qualification: '—',
+        experience: '—'
       };
     });
-    res.json({ data: formatted });
+
+    const mappedStudents = studentsData.map(s => {
+      const name = s.name || 'Unknown';
+      const nameParts = name.split(' ');
+      const initials = nameParts.map(p => p?.[0] || '').join('').slice(0,2).toUpperCase() || 'U';
+      const code = s.department?.code || '';
+      const deptColor = { CSE: 'var(--color-orange)', ECE: 'var(--color-blue)', ME: 'var(--color-green)', CE: 'var(--color-amber)', IT: 'var(--color-purple)' }[code] || 'var(--color-blue)';
+      return {
+        id: s.id,
+        role: 'Student',
+        name: s.name,
+        dept: code || '—',
+        designation: `Student · Sem ${s.current_semester}`,
+        email: s.email,
+        phone: s.phone || '—',
+        specialization: s.roll_no || '—',
+        initials,
+        color: deptColor,
+        office: '—',
+        qualification: '—',
+        experience: '—'
+      };
+    });
+
+    // We can merge all public profiles 
+    const allUsers = [...mappedTeachers, ...mappedStudents];
+    res.json({ data: allUsers });
   } catch (err) {
     next(err);
   }
@@ -61,10 +90,44 @@ export const searchDirectory = async (req, res, next) => {
   try {
     const { q } = req.query;
     if (!q || q.length < 2) {
-      return res.json({ students: [], teachers: [], courses: [] });
+      return res.json({ data: [] });
     }
     const results = await searchAll(q);
-    res.json(results);
+    
+    // Map the results to match local directory mapping structure
+    const mappedSearchTeachers = (results.teachers || []).map(t => ({
+      id: t.id,
+      role: 'Teacher',
+      name: t.name || 'Unknown',
+      dept: '—',
+      designation: t.designation || 'Faculty',
+      email: t.email,
+      phone: t.phone || '—',
+      specialization: '—',
+      initials: (t.name || 'U').split(' ').map(p => p?.[0] || '').join('').slice(0,2).toUpperCase() || 'U',
+      color: 'var(--color-blue)',
+      office: '—',
+      qualification: '—',
+      experience: '—'
+    }));
+
+    const mappedSearchStudents = (results.students || []).map(s => ({
+      id: s.id,
+      role: 'Student',
+      name: s.name || 'Unknown',
+      dept: '—',
+      designation: `Student · Sem ${s.current_semester || '?'}`,
+      email: s.email,
+      phone: s.phone || '—',
+      specialization: s.roll_no || '—',
+      initials: (s.name || 'U').split(' ').map(p => p?.[0] || '').join('').slice(0,2).toUpperCase() || 'U',
+      color: 'var(--color-orange)',
+      office: '—',
+      qualification: '—',
+      experience: '—'
+    }));
+    
+    res.json({ data: [...mappedSearchTeachers, ...mappedSearchStudents] });
   } catch (err) {
     next(err);
   }

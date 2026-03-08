@@ -1,16 +1,44 @@
 import { Router } from 'express';
+import { createClient } from '@supabase/supabase-js';
 import supabaseAdmin from '../config/supabase.js';
 
 const router = Router();
+
+const getUserRole = async (authId) => {
+  try {
+    const [student, teacher, admin] = await Promise.all([
+      supabaseAdmin.from('students').select('id').eq('auth_id', authId).maybeSingle(),
+      supabaseAdmin.from('teachers').select('id').eq('auth_id', authId).maybeSingle(),
+      supabaseAdmin.from('admins').select('id').eq('auth_id', authId).maybeSingle(),
+    ]);
+    if (student.data) return 'student';
+    if (teacher.data) return 'teacher';
+    if (admin.data) return 'admin';
+  } catch (e) {
+    console.error('Error in getUserRole:', e);
+  }
+  return null;
+};
 
 // Public endpoints – no authentication required
 router.post('/login', async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const { data, error } = await supabaseAdmin.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+    if (error) {
+      console.error('Login error from Supabase:', error);
+      throw error;
+    }
+    
+    if (data.user) {
+      const role = await getUserRole(data.user.id);
+      if (!data.user.user_metadata) data.user.user_metadata = {};
+      data.user.user_metadata.role = role;
+    }
+    
     res.json(data); // contains user, session, access_token, refresh_token
   } catch (err) {
+    console.error('Final login process error:', err);
     next(err);
   }
 });
@@ -20,6 +48,13 @@ router.post('/refresh', async (req, res, next) => {
     const { refresh_token } = req.body;
     const { data, error } = await supabaseAdmin.auth.refreshSession({ refresh_token });
     if (error) throw error;
+
+    if (data.user) {
+      const role = await getUserRole(data.user.id);
+      if (!data.user.user_metadata) data.user.user_metadata = {};
+      data.user.user_metadata.role = role;
+    }
+
     res.json(data);
   } catch (err) {
     next(err);
@@ -68,6 +103,13 @@ router.get('/me', async (req, res, next) => {
   try {
     const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
     if (error) throw error;
+    
+    if (user) {
+      const role = await getUserRole(user.id);
+      if (!user.user_metadata) user.user_metadata = {};
+      user.user_metadata.role = role;
+    }
+
     res.json({ user });
   } catch (err) {
     next(err);

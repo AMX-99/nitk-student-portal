@@ -201,3 +201,23 @@ export const changeTeacherPassword = async (req, res, next) => {
     next(err);
   }
 };
+
+export const updateProfile = async (req, res, next) => {
+  try {
+    const updates = req.body;
+    const updated = await teacherService.updateProfile(req.user.id, updates);
+    res.json({ data: updated });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const uploadAvatar = async (req, res, next) => {
+  try {
+    const { signedUrl, publicUrl } = await teacherService.generateAvatarUploadUrl(req.user.id);
+    res.json({ signedUrl, publicUrl });
+  } catch (err) {
+    import('fs').then(fs => fs.writeFileSync('/tmp/avatar_err.log', err.stack));
+    next(err);
+  }
+};

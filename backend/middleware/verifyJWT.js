@@ -10,6 +10,7 @@ export const verifyJWT = async (req, res, next) => {
     if (!token) {
       return res.status(401).json({ error: 'Disformed token' });
     }
+
     const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
     if (error || !user) {
       return res.status(401).json({ error: 'Invalid or expired token' });

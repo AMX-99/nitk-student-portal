@@ -33,7 +33,7 @@ export const getProfile = async (authId) => {
 };
 
 export const updateProfile = async (authId, updates) => {
-  const allowed = ["phone", "address", "bio", "github_url", "linkedin_url"];
+  const allowed = ["phone", "address", "bio", "github_url", "linkedin_url", "profile_pic"];
   const filtered = {};
   for (const key of allowed) {
     if (updates[key] !== undefined) filtered[key] = updates[key];

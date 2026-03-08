@@ -11,12 +11,14 @@ export const listExams = async (filters = {}) => {
   if (filters.course_id) query = query.eq('course_id', filters.course_id);
   if (filters.from_date) query = query.gte('exam_date', filters.from_date);
   if (filters.to_date) query = query.lte('exam_date', filters.to_date);
-  const from = (filters.page - 1) * filters.limit;
-  const to = from + filters.limit - 1;
+  const page = parseInt(filters.page) || 1;
+  const limit = parseInt(filters.limit) || 50;
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
   query = query.range(from, to).order('exam_date').order('start_time');
   const { data, error, count } = await query;
   if (error) throw error;
-  return { data, total: count, page: filters.page, limit: filters.limit };
+  return { data, total: count, page, limit };
 };
 
 export const createExam = async (examData) => {

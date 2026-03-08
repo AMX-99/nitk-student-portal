@@ -6,7 +6,7 @@ export const getMyExams = async (req, res, next) => {
     const { role, id } = req.user;
     let examQuery = supabaseAdmin.from('exam_schedules')
       .select(`
-        id, exam_date, start_time, end_time, room,
+        id, exam_date, start_time, end_time, room, exam_type,
         course:course_id ( code, name ), section
       `);
     if (role === 'student') {
@@ -66,15 +66,7 @@ export const getMyExams = async (req, res, next) => {
     }
     const { data: exams, error } = await examQuery.order('exam_date').order('start_time');
     if (error) throw error;
-    const formatted = exams.map(exam => ({
-      date: new Date(exam.exam_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      day: new Date(exam.exam_date).toLocaleDateString('en-US', { weekday: 'short' }),
-      time: `${exam.start_time.slice(0,5)}–${exam.end_time.slice(0,5)}`,
-      subj: `${exam.course.code} ${exam.course.name}`,
-      room: exam.room,
-      type: 'Theory' // Placeholder
-    }));
-    res.json({ data: formatted });
+    res.json({ data: exams });
   } catch (err) {
     next(err);
   }

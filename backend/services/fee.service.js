@@ -162,12 +162,11 @@ export const markDemandPaid = async (demandId, adminId, notes = '') => {
       amount: demand.total_amount,
       payment_method: 'cash',
       status: 'success',
-      verified_by: adminId,
-      notes
+      verified_by: adminId
     });
   if (paymentError) throw paymentError;
   const { error: updateError } = await supabaseAdmin.from('payment_demands')
-    .update({ status: 'paid' })
+    .update({ status: 'paid', notes })
     .eq('id', demandId);
 
   if (updateError) throw updateError;

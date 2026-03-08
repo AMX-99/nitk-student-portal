@@ -14,3 +14,22 @@ export const revokeUserSessions = async (req, res, next) => {
     next(err);
   }
 };
+
+export const updateProfile = async (req, res, next) => {
+  try {
+    const updates = req.body;
+    const updated = await adminService.updateProfile(req.user.id, updates);
+    res.json({ data: updated });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const uploadAvatar = async (req, res, next) => {
+  try {
+    const { signedUrl, publicUrl } = await adminService.generateAvatarUploadUrl(req.user.id);
+    res.json({ signedUrl, publicUrl });
+  } catch (err) {
+    next(err);
+  }
+};

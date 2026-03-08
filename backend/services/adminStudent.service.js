@@ -13,12 +13,14 @@ export const listStudents = async (filters) => {
   if (filters.search) {
     query = query.or(`name.ilike.%${filters.search}%,roll_no.ilike.%${filters.search}%`);
   }
-  const from = (filters.page - 1) * filters.limit;
-  const to = from + filters.limit - 1;
+  const page = parseInt(filters.page) || 1;
+  const limit = parseInt(filters.limit) || 50;
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
   query = query.range(from, to);
   const { data, error, count } = await query;
   if (error) throw error;
-  return { data, total: count, page: filters.page, limit: filters.limit };
+  return { data, total: count, page, limit };
 };
 
 export const createStudent = async (studentData) => {

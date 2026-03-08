@@ -1,7 +1,7 @@
 import { body, query, param } from 'express-validator';
 
 export const updateStudentSchema = [
-  body('phone').optional().isMobilePhone().withMessage('Invalid phone number'),
+  body('phone').optional({ checkFalsy: true }).matches(/^[0-9+\- ]{10,15}$/).withMessage('Invalid phone number'),
   body('address').optional().isString().trim().isLength({ max: 500 }),
   body('bio').optional().isString().trim().isLength({ max: 1000 }),
   body('github_url').optional().isURL().withMessage('Invalid URL'),

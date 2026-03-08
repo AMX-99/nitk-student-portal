@@ -18,7 +18,7 @@ export const getTeacherByAuthId = async (authId) => {
   return data.id;
 };
 
-const verifyTeacherAssignment = async (teacherId, courseId, academicYear, semester, section) => {
+export const verifyTeacherAssignment = async (teacherId, courseId, academicYear, semester, section) => {
   const { data, error } = await supabaseAdmin.from('teacher_courses')
     .select('id')
     .eq('teacher_id', teacherId)
@@ -107,14 +107,21 @@ export const getCourseStudents = async (courseId, academicYear, semester, sectio
     .eq('course_id', courseId)
     .eq('academic_year', academicYear)
     .eq('semester', semester)
-    .eq('section', section)
-    .order('students(roll_no)');
+    .eq('section', section);
   if (error) throw error;
+  
+  // Sort manually by roll_no
+  data.sort((a, b) => {
+    const rA = a.students?.roll_no || '';
+    const rB = b.students?.roll_no || '';
+    return rA.localeCompare(rB);
+  });
+
   return data.map((item) => ({
-    id: item.students.id,
-    name: item.students.name,
-    roll: item.students.roll_no,
-    email: item.students.email,
+    id: item.students?.id,
+    name: item.students?.name,
+    roll_no: item.students?.roll_no,
+    email: item.students?.email,
   }));
 };
 
@@ -166,13 +173,20 @@ export const getCourseResults = async (courseId, academicYear, semester, section
     .eq('course_id', courseId)
     .eq('academic_year', academicYear)
     .eq('semester', semester)
-    .eq('section', section)
-    .order('students(roll_no)');
+    .eq('section', section);
   if (error) throw error;
+
+  // Sort manually
+  data.sort((a, b) => {
+    const rA = a.students?.roll_no || '';
+    const rB = b.students?.roll_no || '';
+    return rA.localeCompare(rB);
+  });
+
   return data.map((r) => ({
     student_id: r.student_id,
-    name: r.students.name,
-    roll: r.students.roll_no,
+    name: r.students?.name,
+    roll: r.students?.roll_no,
     internal_marks: r.internal_marks,
     external_marks: r.external_marks,
     total: r.total_marks,
@@ -241,4 +255,41 @@ export const getPublicTeacherById = async (teacherId) => {
     .maybeSingle();
   if (error) throw error;
   return data;
+};
+
+export const updateProfile = async (authId, updates) => {
+  const allowed = ['phone', 'office', 'specialization', 'office_hours', 'profile_pic'];
+  const filtered = {};
+  for (const key of allowed) {
+    if (updates[key] !== undefined) filtered[key] = updates[key];
+  }
+  const { data, error } = await supabaseAdmin
+    .from("teachers")
+    .update(filtered)
+    .eq("auth_id", authId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+export const generateAvatarUploadUrl = async (authId) => {
+  try {
+    const fileName = `avatars/${authId}-${Date.now()}.jpg`;
+    const { data, error } = await supabaseAdmin.storage
+      .from("profiles")
+      .createSignedUploadUrl(fileName, {
+        upsert: true,
+        contentType: "image/*",
+      });
+    if (error) {
+       throw error;
+    }
+    const publicUrl = supabaseAdmin.storage
+      .from("profiles")
+      .getPublicUrl(fileName).data.publicUrl;
+    return { signedUrl: data.signedUrl, publicUrl };
+  } catch(e) {
+    throw e;
+  }
 };
