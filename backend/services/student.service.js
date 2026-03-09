@@ -81,19 +81,19 @@ export const getCourses = async (authId) => {
     .select(
       `
       course:courses(id, code, name, credits),
-      attendance:attendance!inner(
+      attendance(
         status,date
       )
-    `,
+    `
     )
     .eq("student_id", studentId)
-    .eq("academic_year", academicYear)
     .eq("semester", current_semester);
 
   if (error) throw error;
   const courses = data.map((item) => {
-    const total = item.attendance.length;
-    const present = item.attendance.filter((a) => a.status === "P").length;
+    const attendanceRecs = item.attendance || [];
+    const total = attendanceRecs.length;
+    const present = attendanceRecs.filter((a) => a.status === "P").length;
     const pct = total ? Math.round((present / total) * 100 * 10) / 10 : 0;
     return {
       code: item.course.code,
@@ -196,9 +196,9 @@ export const getPayments = async (authId) => {
   const { data, error } = await supabaseAdmin.from("payments")
     .select(
       `
-      id,amount,
-      payment_method,transaction_id,
-      status,paid_at,
+      id, amount,
+      payment_method, transaction_id,
+      status, paid_at
     `,
     )
     .eq("student_id", studentId)

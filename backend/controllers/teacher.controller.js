@@ -58,14 +58,17 @@ export const markAttendance = async (req, res, next) => {
 
 export const enterMarks = async (req, res, next) => {
   try {
+    console.log("MARK SUBMITTED: ", req.body);
     const { course_id, academic_year, semester, section, marks } = req.body;
     if (!section) return res.status(400).json({ error: 'section is required' });
     const result = await teacherService.enterMarks(
       req.user.id,
       course_id, academic_year, semester, section, marks
     );
+    console.log("MARK SUCCESS: ", result);
     res.json(result);
   } catch (err) {
+    console.error("MARK ERROR: ", err);
     next(err);
   }
 };

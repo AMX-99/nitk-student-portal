@@ -6,7 +6,7 @@ export const getMyExams = async (req, res, next) => {
     const { role, id } = req.user;
     let examQuery = supabaseAdmin.from('exam_schedules')
       .select(`
-        id, exam_date, start_time, end_time, room, exam_type,
+        id, exam_date, start_time, end_time, room,
         course:course_id ( code, name ), section
       `);
     if (role === 'student') {

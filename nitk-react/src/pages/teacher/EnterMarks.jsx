@@ -10,7 +10,6 @@ export default function EnterMarks() {
   const { data: courses, loading: coursesLoading } = useApi(teacherApi.getCourses);
   const [courseIdx, setCourseIdx] = useState(0);
   const [section, setSection] = useState('A');
-  const [examType, setExamType] = useState('mid');
   const [marks, setMarks] = useState({});
   const [saved, setSaved] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -32,8 +31,8 @@ export default function EnterMarks() {
   const { data: apiStudents, loading: studentsLoading } = useApi(fetchStudents, [courseId, section]);
   const students = apiStudents || [];
 
-  const maxInt = examType === 'mid' ? 20 : 40;
-  const maxExt = examType === 'mid' ? 30 : 60;
+  const maxInt = 40;
+  const maxExt = 60;
 
   const updateMark = (id, field, value) => {
     const max = field === 'int' ? maxInt : maxExt;
@@ -113,10 +112,6 @@ export default function EnterMarks() {
           className="rounded-lg border border-[var(--bd2)] bg-[var(--s3)] px-4 py-2.5 font-body text-[13px] text-[var(--t1)] outline-none">
           <option value="A">Section A</option><option value="B">Section B</option>
         </select>
-        <select value={examType} onChange={(e) => { setExamType(e.target.value); setSaved(false); }}
-          className="rounded-lg border border-[var(--bd2)] bg-[var(--s3)] px-4 py-2.5 font-body text-[13px] text-[var(--t1)] outline-none">
-          <option value="mid">Mid-Semester</option><option value="end">End-Semester</option>
-        </select>
         <div className="flex-1" />
         <Badge variant={filledCount === students.length ? 'green' : 'amber'}>{filledCount}/{students.length} filled</Badge>
         <Badge variant="blue">Max: {maxInt} + {maxExt} = {maxInt + maxExt}</Badge>
@@ -126,7 +121,6 @@ export default function EnterMarks() {
         <Card>
           <CardHeader>
             <h3 className="font-display text-[15px] font-bold">✏️ Enter Marks — {selectedCourse?.code || selectedCourse?.course_code || ''}</h3>
-            <Badge variant={examType === 'mid' ? 'amber' : 'green'}>{examType === 'mid' ? 'Mid-Sem' : 'End-Sem'}</Badge>
           </CardHeader>
           <CardBody className="overflow-x-auto p-0!">
             {studentsLoading ? <LoadingState message="Loading students..." /> : (

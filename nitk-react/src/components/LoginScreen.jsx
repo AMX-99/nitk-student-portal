@@ -37,18 +37,25 @@ export default function LoginScreen() {
     <div className="flex h-screen" style={{ background: 'var(--bg)' }}>
       {/* Left panel */}
       <div className="relative flex flex-1 flex-col justify-center overflow-hidden px-15 py-15" style={{ background: 'var(--s1)' }}>
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            background: `repeating-linear-gradient(0deg, transparent, transparent 40px, var(--bd1) 40px, var(--bd1) 41px),
-                          repeating-linear-gradient(90deg, transparent, transparent 40px, var(--bd1) 40px, var(--bd1) 41px)`,
-          }}
-        />
+        <div className="absolute inset-0 z-0">
+          <img src="/nitk-bg.jpeg" alt="NIT Kurukshetra Campus" className="h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-black/60 mix-blend-multiply" />
+          <div
+            className="absolute inset-0 opacity-40"
+            style={{
+              background: `repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.05) 40px, rgba(255,255,255,0.05) 41px),
+                            repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.05) 40px, rgba(255,255,255,0.05) 41px)`,
+            }}
+          />
+        </div>
         <motion.div className="relative z-10" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
+          <div className="mb-4">
+            <img src="/nitk-logo.jpeg" alt="NIT Kurukshetra Logo" className="h-16 w-16 rounded-xl object-cover shadow-lg" />
+          </div>
           <h1 className="mb-2.5 bg-gradient-to-r from-orange to-amber bg-clip-text font-display text-4xl font-extrabold text-transparent">
             NITK Portal
           </h1>
-          <p className="max-w-[380px] text-[15px] leading-relaxed text-[var(--t2)]">
+          <p className="max-w-[380px] text-[15px] leading-relaxed text-white/80">
             NIT Kurukshetra — Student Information Management System. Access your academics, attendance, fees, and more from one unified portal.
           </p>
           <div className="mt-8 space-y-3.5">
@@ -58,7 +65,7 @@ export default function LoginScreen() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + i * 0.1 }}
-                className="flex items-center gap-2.5 text-[13px] text-[var(--t2)]"
+                className="flex items-center gap-2.5 text-[13px] text-white/90"
               >
                 <span
                   className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-base"
