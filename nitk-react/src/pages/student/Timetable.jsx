@@ -127,7 +127,7 @@ export default function Timetable() {
                               <motion.div
                                 onHoverStart={() => setHoveredSlot(cellKey)}
                                 onHoverEnd={() => setHoveredSlot(null)}
-                                whileHover={{ scale: 1.08, zIndex: 10 }}
+                                whileHover={{ zIndex: 10 }}
                                 className="cursor-pointer rounded-lg border px-2 py-2 text-center transition-colors"
                                 style={{ background: c.bg, borderColor: isHovered ? c.border : 'transparent' }}
                               >
@@ -163,7 +163,7 @@ export default function Timetable() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.5 + i * 0.06, type: 'spring' }}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ opacity: 0.9 }}
                     className="flex items-center gap-2 rounded-lg border px-3 py-2 transition-colors"
                     style={{ background: c.bg, borderColor: 'transparent' }}
                   >
