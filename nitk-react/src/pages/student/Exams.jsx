@@ -35,7 +35,8 @@ export default function Exams() {
 
   const parseExamDate = (isoDate, startTime) => {
     if (!isoDate) return new Date().toISOString();
-    return `${isoDate.split('T')[0]}T${startTime}:00`;
+    const [hh, mm] = (startTime || '09:00').split(':');
+    return `${isoDate.split('T')[0]}T${hh}:${mm || '00'}:00`;
   };
 
   const theoryCount = exams.filter(e => e.type === 'Theory').length;

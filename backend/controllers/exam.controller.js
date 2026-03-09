@@ -6,7 +6,7 @@ export const getMyExams = async (req, res, next) => {
     const { role, id } = req.user;
     let examQuery = supabaseAdmin.from('exam_schedules')
       .select(`
-        id, exam_date, start_time, end_time, room,
+        id, exam_date, start_time, end_time, room, exam_type, max_marks,
         course:course_id ( code, name ), section
       `);
     if (role === 'student') {
@@ -21,12 +21,10 @@ export const getMyExams = async (req, res, next) => {
       const { data: enrollments, error: enrollErr } = await supabaseAdmin.from('enrollments')
         .select('course_id')
         .eq('student_id', student.id)
-        .eq('academic_year', academicYear)
         .eq('semester', student.current_semester);
       if (enrollErr) throw enrollErr;
       const courseIds = enrollments.map(e => e.course_id);
       examQuery = examQuery
-        .eq('academic_year', academicYear)
         .eq('semester', student.current_semester)
         .in('course_id', courseIds);
     } 
@@ -52,12 +50,10 @@ export const getMyExams = async (req, res, next) => {
       const { data: tc, error: tcErr } = await supabaseAdmin.from('teacher_courses')
         .select('course_id')
         .eq('teacher_id', teacher.id)
-        .eq('academic_year', academic_year)
         .eq('semester', semester);
       if (tcErr) throw tcErr;
       const courseIds = tc.map(t => t.course_id);
       examQuery = examQuery
-        .eq('academic_year', academic_year)
         .eq('semester', semester)
         .in('course_id', courseIds);
     } 
