@@ -31,11 +31,11 @@ export default function Timetable() {
   const courseColors = {};
   let colorIdx = 0;
   slots.forEach(s => {
-    const code = s.courses?.code || s.course_code || '';
+    const code = s.course?.code || s.courses?.code || s.course_code || '';
     if (code && !courseColors[code]) {
       courseColors[code] = {
         ...courseColorPalette[colorIdx % courseColorPalette.length],
-        name: s.courses?.name || s.course_name || code,
+        name: s.course?.name || s.courses?.name || s.course_name || code,
       };
       colorIdx++;
     }
@@ -51,7 +51,7 @@ export default function Timetable() {
       const startHour = parseInt(s.start_time?.split(':')[0]);
       const slotIdx = defaultSlots.findIndex(sl => parseInt(sl) === startHour);
       if (slotIdx >= 0) {
-        schedule[day][slotIdx] = s.courses?.code || s.course_code || '';
+        schedule[day][slotIdx] = s.course?.code || s.courses?.code || s.course_code || '';
       }
     }
   });
