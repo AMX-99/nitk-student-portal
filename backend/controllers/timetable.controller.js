@@ -8,7 +8,7 @@ export const getMyTimetable = async (req, res, next) => {
       .from("timetable_slots")
       .select(
         `
-        id, day_of_week, start_time, end_time,
+        id, day_of_week, start_time, end_time, slot_type,
         course:course_id ( code, name ),
         room, section
       `,
@@ -23,7 +23,6 @@ export const getMyTimetable = async (req, res, next) => {
       }
       const academicYear = getAcademicYearFromBatch(student.batch_year, student.current_semester);
       query = query
-        .eq('academic_year', academicYear)
         .eq('semester', student.current_semester)
         .eq('section', student.section);
     } 
@@ -49,7 +48,6 @@ export const getMyTimetable = async (req, res, next) => {
 
       const { academic_year, semester } = assignments[0];
       query = query
-        .eq('academic_year', academic_year)
         .eq('semester', semester)
         .eq('teacher_id', teacher.id);
     } 
