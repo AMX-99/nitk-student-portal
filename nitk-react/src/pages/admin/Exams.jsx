@@ -13,8 +13,8 @@ export default function AdminExams() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [formData, setFormData] = useState({
-    course_id: '', exam_type: 'mid_sem', date: '', start_time: '09:00', end_time: '12:00',
-    room: '', academic_year: '2024-25', semester: 5, max_marks: 100,
+    course_id: '', exam_type: 'mid_sem', exam_date: '', start_time: '09:00', end_time: '12:00',
+    room: '', academic_year: '2024-25', semester: 5, max_marks: 100, section: 'A',
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -24,10 +24,10 @@ export default function AdminExams() {
     courseCode: e.course?.code || e.courses?.code || '',
   }));
 
-  const { sorted, toggle, indicator } = useSortable(exams, 'date', 'asc');
+  const { sorted, toggle, indicator } = useSortable(exams, 'exam_date', 'asc');
 
   const resetForm = () => {
-    setFormData({ course_id: '', exam_type: 'mid_sem', date: '', start_time: '09:00', end_time: '12:00', room: '', academic_year: '2024-25', semester: 5, max_marks: 100 });
+    setFormData({ course_id: '', exam_type: 'mid_sem', exam_date: '', start_time: '09:00', end_time: '12:00', room: '', academic_year: '2024-25', semester: 5, max_marks: 100, section: 'A' });
     setEditing(null);
   };
 
@@ -36,8 +36,9 @@ export default function AdminExams() {
     setEditing(e);
     setFormData({
       course_id: e.course_id, exam_type: e.exam_type || 'mid_sem',
-      date: e.date?.split('T')[0] || '', start_time: e.start_time || '09:00', end_time: e.end_time || '12:00',
+      exam_date: e.exam_date?.split('T')[0] || '', start_time: e.start_time || '09:00', end_time: e.end_time || '12:00',
       room: e.room || '', academic_year: e.academic_year || '2024-25', semester: e.semester || 5, max_marks: e.max_marks || 100,
+      section: e.section || 'A',
     });
     setModalOpen(true);
   };
@@ -87,7 +88,7 @@ export default function AdminExams() {
                     className="border-b border-[var(--bd1)] hover:bg-[var(--s3)] transition-colors">
                     <td className="px-4 py-3"><span className="font-medium">{e.courseCode}</span> <span className="text-[var(--t3)] text-[11px]">{e.courseName}</span></td>
                     <td className="px-4 py-3"><Badge variant={typeColors[e.exam_type] || 'grey'}>{typeLabels[e.exam_type] || e.exam_type}</Badge></td>
-                    <td className="px-4 py-3 font-mono text-xs">{e.date ? new Date(e.date).toLocaleDateString() : '—'}</td>
+                    <td className="px-4 py-3 font-mono text-xs">{e.exam_date ? new Date(e.exam_date).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-3 font-mono text-xs">{e.start_time || '—'} – {e.end_time || '—'}</td>
                     <td className="px-4 py-3">{e.room || '—'}</td>
                     <td className="px-4 py-3 font-mono text-xs">{e.max_marks}</td>
@@ -126,7 +127,7 @@ export default function AdminExams() {
             </div>
             <div className="space-y-1">
               <label className="text-[11px] font-semibold uppercase text-[var(--t3)]">Date</label>
-              <input type="date" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})}
+              <input type="date" required value={formData.exam_date} onChange={e => setFormData({...formData, exam_date: e.target.value})}
                 className="w-full rounded-md border border-[var(--bd1)] bg-[var(--s3)] px-3 py-2 text-[13px] outline-none focus:border-orange" />
             </div>
           </div>

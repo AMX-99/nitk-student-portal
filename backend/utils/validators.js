@@ -140,8 +140,10 @@ export const validateListExams = [
 
 export const validateCreateExam = [
   body('course_id').isInt().toInt(),
-  body('section').isLength({ min: 1, max: 1 }).trim(),
+  body('section').optional().isLength({ min: 1, max: 1 }).trim(),
   body('exam_date').isISO8601().toDate(),
+  body('exam_type').optional().isString().trim(),
+  body('max_marks').optional().isInt().toInt(),
   body('start_time').matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).withMessage('Invalid time format (HH:MM)'),
   body('end_time').matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).withMessage('Invalid time format (HH:MM)'),
   body('room').optional().trim(),
@@ -154,6 +156,8 @@ export const validateUpdateExam = [
   body('course_id').optional().isInt().toInt(),
   body('section').optional().isLength({ min: 1, max: 1 }).trim(),
   body('exam_date').optional().isISO8601().toDate(),
+  body('exam_type').optional().isString().trim(),
+  body('max_marks').optional().isInt().toInt(),
   body('start_time').optional().matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).withMessage('Invalid time format (HH:MM)'),
   body('end_time').optional().matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).withMessage('Invalid time format (HH:MM)'),
   body('room').optional().trim(),

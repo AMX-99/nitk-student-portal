@@ -11,7 +11,7 @@ export const listExams = async (req, res, next) => {
 
 export const createExam = async (req, res, next) => {
   try {
-    const examData = { ...req.body, created_by: req.user.id };
+    const examData = { ...req.body };
     const exam = await examService.createExam(examData);
     res.status(201).json(exam);
   } catch (err) {

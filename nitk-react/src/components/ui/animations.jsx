@@ -132,8 +132,10 @@ export function useSortable(data, defaultKey = null, defaultDir = 'asc') {
 
   const sorted = [...data].sort((a, b) => {
     if (!sortKey) return 0;
-    const va = a[sortKey], vb = b[sortKey];
-    const cmp = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb));
+    const va = a[sortKey] ?? '';
+    const vb = b[sortKey] ?? '';
+    if (va === vb) return 0;
+    const cmp = typeof va === 'number' && typeof vb === 'number' ? va - vb : String(va).localeCompare(String(vb));
     return sortDir === 'asc' ? cmp : -cmp;
   });
 
