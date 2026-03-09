@@ -22,8 +22,10 @@ export const listTimetableSlots = async (filters) => {
 };
 
 export const createTimetableSlot = async (slotData) => {
+  const payload = { ...slotData };
+  if (payload.department_id === '') payload.department_id = null;
   const { data, error } = await supabaseAdmin.from('timetable_slots')
-    .insert(slotData)
+    .insert(payload)
     .select()
     .single();
   if (error) throw error;
@@ -40,8 +42,10 @@ export const getTimetableSlotById = async (id) => {
 };
 
 export const updateTimetableSlot = async (id, updates) => {
+  const payload = { ...updates };
+  if (payload.department_id === '') payload.department_id = null;
   const { data, error } = await supabaseAdmin.from('timetable_slots')
-    .update(updates)
+    .update(payload)
     .eq('id', id)
     .select()
     .single();

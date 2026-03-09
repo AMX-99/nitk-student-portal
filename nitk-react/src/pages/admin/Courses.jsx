@@ -19,7 +19,7 @@ export default function CoursesEnrollment() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState('assignment');
   const [assignForm, setAssignForm] = useState({ teacher_id: '', course_id: '', academic_year: '2024-25', semester: 5, section: 'A' });
-  const [enrollForm, setEnrollForm] = useState({ student_id: '', course_id: '', academic_year: '2024-25', semester: 5 });
+  const [enrollForm, setEnrollForm] = useState({ student_id: '', course_id: '', academic_year: '2024-25', semester: 5, section: 'A' });
   const [submitting, setSubmitting] = useState(false);
 
   const handleCreateAssignment = async (e) => {
