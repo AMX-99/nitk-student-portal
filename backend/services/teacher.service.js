@@ -82,6 +82,7 @@ export const getTeacherCourses = async (authId) => {
         .eq('section', tc.section);
       return {
         ...tc.courses,
+        course_id: tc.course_id,
         section: tc.section,
         academic_year: tc.academic_year,
         semester: tc.semester,
