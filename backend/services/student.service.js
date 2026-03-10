@@ -158,9 +158,9 @@ export const getResults = async (authId, semester) => {
   return data.map((item) => ({
     code: item.course.code,
     name: item.course.name,
-    int: item.internal_marks,
-    ext: item.external_marks,
-    total: item.total_marks,
+    int: item.internal_marks ?? 0,
+    ext: item.external_marks ?? 0,
+    total: item.total_marks ?? ((item.internal_marks ?? 0) + (item.external_marks ?? 0)),
     grade: item.grade,
     pts: item.grade_points,
   }));

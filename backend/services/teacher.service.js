@@ -181,6 +181,8 @@ export const enterMarks = async (authId, courseId, academicYear, semester, secti
 
   const resultsData = marks.map((m) => {
     const existingId = existingMap.get(m.student_id);
+    const internal = m.internal_marks ?? 0;
+    const external = m.external_marks ?? 0;
     const payload = {
       student_id: m.student_id,
       course_id: courseId,
@@ -188,8 +190,9 @@ export const enterMarks = async (authId, courseId, academicYear, semester, secti
       academic_year: academicYear,
       semester,
       section,
-      internal_marks: m.internal_marks,
-      external_marks: m.external_marks,
+      internal_marks: internal,
+      external_marks: external,
+      total_marks: internal + external,
       grade: m.grade,
       grade_points: m.grade_points,
     };
@@ -238,9 +241,9 @@ export const getCourseResults = async (courseId, academicYear, semester, section
       student_id: r.student_id,
       name: s?.name || (s?.first_name ? `${s.first_name} ${s.last_name || ''}`.trim() : ''),
       roll: s?.roll_no,
-      internal_marks: r.internal_marks,
-      external_marks: r.external_marks,
-      total: r.total_marks,
+      internal_marks: r.internal_marks ?? 0,
+      external_marks: r.external_marks ?? 0,
+      total: r.total_marks ?? ((r.internal_marks ?? 0) + (r.external_marks ?? 0)),
       grade: r.grade,
       grade_points: r.grade_points,
     };

@@ -26,7 +26,7 @@ export default function Results() {
     g === 'B' ? 'bg-amber/15 text-amber' :
     g === 'C' ? 'bg-orange/15 text-orange' : 'bg-red/15 text-red';
 
-  const loading = cgpaLoading && resultsLoading;
+  const loading = cgpaLoading || resultsLoading;
   if (loading) return <LoadingState message="Loading results..." />;
 
   return (
