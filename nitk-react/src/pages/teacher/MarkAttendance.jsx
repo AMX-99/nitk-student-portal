@@ -16,7 +16,7 @@ export default function MarkAttendance() {
   const [submitting, setSubmitting] = useState(false);
 
   const teacherCourses = courses || [];
-  const selectedCourse = teacherCourses.find(c => (c.id || c.course_id) === course) || teacherCourses[0];
+  const selectedCourse = teacherCourses.find(c => String(c.id || c.course_id) === String(course)) || teacherCourses[0];
   const courseId = selectedCourse?.id || selectedCourse?.course_id || '';
 
   const fetchStudents = useCallback(() => {
