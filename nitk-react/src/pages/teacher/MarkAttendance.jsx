@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function MarkAttendance() {
   const { data: courses, loading: coursesLoading } = useApi(teacherApi.getCourses);
-  const [course, setCourse] = useState('');
+  const [courseIdx, setCourseIdx] = useState(0);
   const [section, setSection] = useState('A');
   const [dateStr, setDateStr] = useState(new Date().toISOString().split('T')[0]);
   const [attendance, setAttendance] = useState({});
@@ -16,7 +16,7 @@ export default function MarkAttendance() {
   const [submitting, setSubmitting] = useState(false);
 
   const teacherCourses = courses || [];
-  const selectedCourse = teacherCourses.find(c => String(c.id || c.course_id) === String(course)) || teacherCourses[0];
+  const selectedCourse = teacherCourses[courseIdx] || teacherCourses[0] || {};
   const courseId = selectedCourse?.id || selectedCourse?.course_id || '';
 
   const fetchStudents = useCallback(() => {
@@ -100,10 +100,16 @@ export default function MarkAttendance() {
   return (
     <motion.div className="space-y-5" variants={stagger.container} initial="hidden" animate="show">
       <motion.div className="flex items-center gap-4" variants={stagger.item}>
-        <select value={course || (teacherCourses[0]?.id || '')} onChange={(e) => { setCourse(e.target.value); setAttendance({}); setSubmitted(false); }}
+        <select value={courseIdx} onChange={(e) => {
+          const idx = Number(e.target.value);
+          setCourseIdx(idx);
+          setSection(teacherCourses[idx]?.section || 'A');
+          setAttendance({});
+          setSubmitted(false);
+        }}
           className="rounded-lg border border-[var(--bd2)] bg-[var(--s3)] px-4 py-2.5 font-body text-[13px] text-[var(--t1)] outline-none">
-          {teacherCourses.map(c => (
-            <option key={c.id || c.course_id} value={c.id || c.course_id}>
+          {teacherCourses.map((c, i) => (
+            <option key={i} value={i}>
               {c.code || c.course_code} · {c.name || c.course_name}
             </option>
           ))}
