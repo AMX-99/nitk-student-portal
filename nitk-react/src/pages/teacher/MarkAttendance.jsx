@@ -28,7 +28,7 @@ export default function MarkAttendance() {
     });
   }, [courseId, section, selectedCourse?.semester]);
 
-  const { data: apiStudents, loading: studentsLoading } = useApi(fetchStudents, [courseId, section]);
+  const { data: apiStudents, loading: studentsLoading, error: studentsError } = useApi(fetchStudents, [courseId, section, selectedCourse?.semester]);
   const students = apiStudents || [];
 
   // Initialize attendance when students change

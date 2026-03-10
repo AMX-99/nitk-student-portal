@@ -32,6 +32,7 @@ export const getCourseStudents = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { academic_year, semester, section } = req.query;
+    console.log(`[getCourseStudents] ID: ${id}, Sem: ${semester}, Sec: ${section}, Yr: ${academic_year}`);
     if (!academic_year || !semester || !section) {
       return res.status(400).json({ error: 'academic_year, semester, and section required' });
     }
