@@ -20,7 +20,6 @@ const courseColorPalette = [
 
 export default function Timetable() {
   const { data: apiSlots, loading, error, refetch } = useApi(() => commonApi.getTimetable().catch(() => []));
-  const [hoveredSlot, setHoveredSlot] = useState(null);
 
   const now = new Date();
   const todayIdx = Math.min(Math.max(now.getDay() - 1, 0), 4);
@@ -113,8 +112,6 @@ export default function Timetable() {
                           {day.slice(0, 3)}
                         </td>
                         {schedule[day].map((code, si) => {
-                          const cellKey = `${day}-${si}`;
-                          const isHovered = hoveredSlot === cellKey;
                           if (code === 'LUNCH') {
                             return <td key={si} className="px-2 py-2.5 text-center"><span className="text-[10px] text-[var(--t3)]">🍽 Lunch</span></td>;
                           }
@@ -124,20 +121,12 @@ export default function Timetable() {
                           const c = courseColors[code] || courseColorPalette[0];
                           return (
                             <td key={si} className="px-1.5 py-2">
-                              <motion.div
-                                onHoverStart={() => setHoveredSlot(cellKey)}
-                                onHoverEnd={() => setHoveredSlot(null)}
-                                whileHover={{ zIndex: 10 }}
-                                className="cursor-pointer rounded-lg border px-2 py-2 text-center transition-colors"
-                                style={{ background: c.bg, borderColor: isHovered ? c.border : 'transparent' }}
+                              <div
+                                className="rounded-lg border px-2 py-2 text-center"
+                                style={{ background: c.bg, borderColor: 'transparent' }}
                               >
                                 <span className="font-mono text-[10.5px] font-bold" style={{ color: c.text }}>{code}</span>
-                                {isHovered && (
-                                  <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="mt-0.5 text-[9px]" style={{ color: c.text }}>
-                                    {c.name}
-                                  </motion.p>
-                                )}
-                              </motion.div>
+                              </div>
                             </td>
                           );
                         })}
@@ -163,7 +152,6 @@ export default function Timetable() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.5 + i * 0.06, type: 'spring' }}
-                    whileHover={{ opacity: 0.9 }}
                     className="flex items-center gap-2 rounded-lg border px-3 py-2 transition-colors"
                     style={{ background: c.bg, borderColor: 'transparent' }}
                   >
