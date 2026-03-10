@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Card, CardHeader, CardBody, Badge, Button } from '../../components/ui';
 import { useApi } from '../../hooks/useApi';
 import * as teacherApi from '../../services/teacherApi';
@@ -17,7 +17,14 @@ export default function EnterMarks() {
 
   const teacherCourses = courses || [];
   const selectedCourse = teacherCourses[courseIdx] || {};
-  const courseId = selectedCourse?.id || selectedCourse?.course_id || '';
+  const courseId = selectedCourse?.course_id || selectedCourse?.id || '';
+
+  // Ensure initial section is correct when courses load
+  useEffect(() => {
+    if (teacherCourses.length > 0 && section === 'A' && teacherCourses[0].section) {
+      setSection(teacherCourses[courseIdx]?.section || teacherCourses[0].section);
+    }
+  }, [courses]);
 
   const fetchStudents = useCallback(() => {
     if (!courseId) return Promise.resolve([]);
@@ -69,10 +76,10 @@ export default function EnterMarks() {
         const pct = maxTotal > 0 ? (total / maxTotal) * 100 : 0;
         const grade = pct >= 90 ? 'A+' : pct >= 80 ? 'A' : pct >= 65 ? 'B' : pct >= 50 ? 'C' : 'F';
         const grade_points = grade === 'A+' ? 10 : grade === 'A' ? 9 : grade === 'B' ? 8 : grade === 'C' ? 6 : 0;
-        
-        return { 
-          student_id: s.id, 
-          internal_marks: internal, 
+
+        return {
+          student_id: s.id,
+          internal_marks: internal,
           external_marks: external,
           total_marks: total,
           grade,

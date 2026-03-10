@@ -17,7 +17,14 @@ export default function MarkAttendance() {
 
   const teacherCourses = courses || [];
   const selectedCourse = teacherCourses[courseIdx] || teacherCourses[0] || {};
-  const courseId = selectedCourse?.id || selectedCourse?.course_id || '';
+  const courseId = selectedCourse?.course_id || selectedCourse?.id || '';
+
+  // Ensure initial section is correct when courses load
+  useEffect(() => {
+    if (teacherCourses.length > 0 && section === 'A' && teacherCourses[0].section) {
+      setSection(teacherCourses[courseIdx]?.section || teacherCourses[0].section);
+    }
+  }, [courses]);
 
   const fetchStudents = useCallback(() => {
     if (!courseId) return Promise.resolve([]);
