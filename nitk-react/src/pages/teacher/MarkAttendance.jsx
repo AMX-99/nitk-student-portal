@@ -34,7 +34,10 @@ export default function MarkAttendance() {
   // Initialize attendance when students change
   if (students.length > 0 && Object.keys(attendance).length === 0) {
     const init = {};
-    students.forEach((s, i) => { init[s.roll_no || s.id || `idx-${i}`] = true; });
+    students.forEach((s, i) => {
+      const sData = s.students || s.student || s;
+      init[s.roll_no || sData.roll_no || s.id || `idx-${i}`] = true;
+    });
     if (Object.keys(init).length > 0 && Object.keys(attendance).length !== Object.keys(init).length) {
       // defer setting state
       setTimeout(() => setAttendance(init), 0);
@@ -48,7 +51,10 @@ export default function MarkAttendance() {
 
   const markAll = (val) => {
     const init = {};
-    students.forEach((s, i) => { init[s.roll_no || s.id || `idx-${i}`] = val; });
+    students.forEach((s, i) => {
+      const sData = s.students || s.student || s;
+      init[s.roll_no || sData.roll_no || s.id || `idx-${i}`] = val;
+    });
     setAttendance(init);
     setSubmitted(false);
     showToast(val ? 'All students marked present' : 'All students marked absent', 'info');
@@ -57,10 +63,16 @@ export default function MarkAttendance() {
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      const records = Object.entries(attendance).map(([roll, present]) => ({
-        student_id: students.find((s, i) => (s.roll_no || s.id || `idx-${i}`) === roll)?.id,
-        status: present ? 'P' : 'A',
-      })).filter(r => r.student_id);
+      const records = Object.entries(attendance).map(([roll, present]) => {
+        const studentObj = students.find((s, i) => {
+          const sData = s.students || s.student || s;
+          return (s.roll_no || sData.roll_no || s.id || `idx-${i}`) === roll;
+        });
+        return {
+          student_id: studentObj?.id,
+          status: present ? 'P' : 'A',
+        };
+      }).filter(r => r.student_id);
 
       await teacherApi.markAttendance({
         course_id: courseId,
@@ -133,14 +145,16 @@ export default function MarkAttendance() {
                 </thead>
                 <tbody>
                   {students.map((s, i) => {
-                    const roll = s.roll_no || s.id || `idx-${i}`;
-                    const displayRoll = s.roll_no || '—';
+                    const sData = s.students || s.student || s;
+                    const roll = s.roll_no || sData.roll_no || s.id || `idx-${i}`;
+                    const displayRoll = s.roll_no || sData.roll_no || '—';
+                    const displayName = s.name || sData.name || (sData.first_name ? `${sData.first_name} ${sData.last_name || ''}`.trim() : '');
                     return (
                       <motion.tr key={roll} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04, type: 'spring', damping: 20 }}
                         className={`border-b border-[var(--bd1)] transition-all ${!attendance[roll] ? 'bg-red/5' : 'hover:bg-[var(--s3)]'}`}>
                         <td className="px-5 py-3 font-mono text-[11px] text-[var(--t3)]">{i + 1}</td>
                         <td className="px-5 py-3 font-mono text-xs">{displayRoll}</td>
-                        <td className="px-5 py-3 font-medium">{s.name || `${s.first_name || ''} ${s.last_name || ''}`.trim()}</td>
+                        <td className="px-5 py-3 font-medium">{displayName}</td>
                         <td className="px-5 py-3">
                           <AnimatePresence mode="wait">
                             <motion.div key={attendance[roll] ? 'P' : 'A'} initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} transition={{ duration: 0.2 }}>

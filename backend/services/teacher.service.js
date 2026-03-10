@@ -79,7 +79,7 @@ export const getTeacherCourses = async (authId) => {
         .eq('course_id', tc.course_id)
         .eq('academic_year', tc.academic_year)
         .eq('semester', tc.semester)
-        .eq('section', tc.section); 
+        .eq('section', tc.section);
       return {
         ...tc.courses,
         section: tc.section,
@@ -106,18 +106,23 @@ export const getCourseStudents = async (courseId, academicYear, semester, sectio
     .eq('semester', semester)
     .eq('section', section);
   if (error) throw error;
-  
+
   // Sort manually by roll_no
-  data.sort((a, b) => {
-    const studentA = Array.isArray(a.students) ? a.students[0] : a.students;
-    const studentB = Array.isArray(b.students) ? b.students[0] : b.students;
+  const validData = data.filter(item => {
+    const s = Array.isArray(item.students) ? item.students[0] : (item.students || item.student);
+    return s != null;
+  });
+
+  validData.sort((a, b) => {
+    const studentA = Array.isArray(a.students) ? a.students[0] : (a.students || a.student);
+    const studentB = Array.isArray(b.students) ? b.students[0] : (b.students || b.student);
     const rA = studentA?.roll_no || '';
     const rB = studentB?.roll_no || '';
     return rA.localeCompare(rB);
   });
 
-  return data.map((item) => {
-    const student = Array.isArray(item.students) ? item.students[0] : item.students;
+  return validData.map((item) => {
+    const student = Array.isArray(item.students) ? item.students[0] : (item.students || item.student);
     return {
       id: item.student_id,
       name: student?.name || (student?.first_name ? `${student.first_name} ${student.last_name || ''}`.trim() : ''),
@@ -227,16 +232,21 @@ export const getCourseResults = async (courseId, academicYear, semester, section
   if (error) throw error;
 
   // Sort manually
-  data.sort((a, b) => {
-    const sA = Array.isArray(a.students) ? a.students[0] : a.students;
-    const sB = Array.isArray(b.students) ? b.students[0] : b.students;
+  const validData = data.filter(r => {
+    const s = Array.isArray(r.students) ? r.students[0] : (r.students || r.student);
+    return s != null;
+  });
+
+  validData.sort((a, b) => {
+    const sA = Array.isArray(a.students) ? a.students[0] : (a.students || a.student);
+    const sB = Array.isArray(b.students) ? b.students[0] : (b.students || b.student);
     const rA = sA?.roll_no || '';
     const rB = sB?.roll_no || '';
     return rA.localeCompare(rB);
   });
 
-  return data.map((r) => {
-    const s = Array.isArray(r.students) ? r.students[0] : r.students;
+  return validData.map((r) => {
+    const s = Array.isArray(r.students) ? r.students[0] : (r.students || r.student);
     return {
       student_id: r.student_id,
       name: s?.name || (s?.first_name ? `${s.first_name} ${s.last_name || ''}`.trim() : ''),
@@ -338,13 +348,13 @@ export const generateAvatarUploadUrl = async (authId) => {
         contentType: "image/*",
       });
     if (error) {
-       throw error;
+      throw error;
     }
     const publicUrl = supabaseAdmin.storage
       .from("profiles")
       .getPublicUrl(fileName).data.publicUrl;
     return { signedUrl: data.signedUrl, publicUrl };
-  } catch(e) {
+  } catch (e) {
     throw e;
   }
 };
