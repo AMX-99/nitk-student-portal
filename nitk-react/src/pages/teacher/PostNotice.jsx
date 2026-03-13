@@ -35,7 +35,7 @@ export default function PostNotice() {
     try {
       await teacherApi.postNotice({
         title: title.trim(),
-        body: body.trim(),
+        content: body.trim(),
         is_pinned: priority === 'urgent',
       });
       setPosted(true);
