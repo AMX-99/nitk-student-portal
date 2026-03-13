@@ -11,7 +11,6 @@ export const navDefs = {
     { id: 'fees', icon: '💳', label: 'Fee Payment', page: 'fees' },
     { id: 'notices', icon: '📢', label: 'Notice Board', page: 'notices' },
     { id: 'complaints', icon: '📝', label: 'Grievances', page: 'scomplaints' },
-    { id: 'directory', icon: '👥', label: 'Directory', page: 'directory' },
     { id: 'profile', icon: '👤', label: 'My Profile', page: 'sprofile' },
   ],
   teacher: [

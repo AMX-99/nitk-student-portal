@@ -141,7 +141,7 @@ export default function AppShell({ role, page, setPage, onLogout, onThemeToggle,
                 // but let's route admin to 'astearch' or just bypass.
                 // Wait, based on pageMap, directory is `directory` for student, `tdirectory` for teacher.
                 // For admin let's just use `astudents` or ignore based on role.
-                const navTo = role === 'student' ? 'directory' : (role === 'teacher' ? 'tdirectory' : 'astudents');
+                const navTo = role === 'student' ? 'dashboard' : (role === 'teacher' ? 'tdirectory' : 'astudents');
                 if (page !== navTo) setPage(navTo);
                 
                 // Dispatch custom event to let Directory component know
