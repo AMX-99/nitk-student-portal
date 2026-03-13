@@ -77,8 +77,6 @@ export const getTeacherCourses = async (authId) => {
       const { count } = await supabaseAdmin.from('enrollments')
         .select('*', { count: 'exact', head: true })
         .eq('course_id', tc.course_id)
-        .eq('academic_year', tc.academic_year)
-        .eq('semester', tc.semester)
         .eq('section', tc.section);
       return {
         ...tc.courses,
@@ -87,7 +85,7 @@ export const getTeacherCourses = async (authId) => {
         academic_year: tc.academic_year,
         semester: tc.semester,
         studentCount: count || 0,
-        progress: tc.syllabus_progress, // already a JSON array
+        progress: Number(tc.syllabus_progress) || 0,
       };
     })
   );
