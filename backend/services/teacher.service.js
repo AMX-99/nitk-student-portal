@@ -196,7 +196,6 @@ export const enterMarks = async (authId, courseId, academicYear, semester, secti
       section,
       internal_marks: internal,
       external_marks: external,
-      total_marks: internal + external,
       grade: m.grade,
       grade_points: m.grade_points,
     };
