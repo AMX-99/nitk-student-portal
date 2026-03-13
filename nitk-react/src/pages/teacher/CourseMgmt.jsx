@@ -205,7 +205,6 @@ export default function CourseMgmt({ setPage }) {
                   {[
                     { label: '📋 Mark Attendance', target: 'markatt' },
                     { label: '✏️ Enter Marks', target: 'entermarks' },
-                    { label: '📖 View Gradebook', target: 'gradebook' },
                   ].map((a, i) => (
                     <motion.div key={i} whileHover={{ x: 4 }}
                       onClick={() => setPage(a.target)}

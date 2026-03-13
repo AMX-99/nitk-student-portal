@@ -19,7 +19,6 @@ export const navDefs = {
     { section: 'TEACH' },
     { id: 'markatt', icon: '📋', label: 'Mark Attendance', page: 'markatt' },
     { id: 'entermarks', icon: '✏️', label: 'Enter Marks', page: 'entermarks' },
-    { id: 'gradebook', icon: '📖', label: 'Gradebook', page: 'gradebook' },
     { id: 'coursemgmt', icon: '📚', label: 'Course Management', page: 'coursemgmt' },
     { section: 'CAMPUS' },
     { id: 'postnotice', icon: '📢', label: 'Post Notice', page: 'postnotice' },

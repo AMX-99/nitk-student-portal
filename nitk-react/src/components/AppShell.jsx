@@ -18,7 +18,6 @@ import StudentComplaints from '../pages/student/Complaints';
 import TeacherDashboard from '../pages/teacher/Dashboard';
 import MarkAttendance from '../pages/teacher/MarkAttendance';
 import EnterMarks from '../pages/teacher/EnterMarks';
-import Gradebook from '../pages/teacher/Gradebook';
 import PostNotice from '../pages/teacher/PostNotice';
 import CourseMgmt from '../pages/teacher/CourseMgmt';
 import TeacherProfile from '../pages/teacher/Profile';
@@ -42,7 +41,7 @@ const pageMap = {
   fees: Fees, notices: Notices, timetable: Timetable, exams: Exams,
   directory: Directory, sprofile: StudentProfile, scomplaints: StudentComplaints,
   tdashboard: TeacherDashboard, markatt: MarkAttendance, entermarks: EnterMarks,
-  gradebook: Gradebook, postnotice: PostNotice, coursemgmt: CourseMgmt, tprofile: TeacherProfile,
+  postnotice: PostNotice, coursemgmt: CourseMgmt, tprofile: TeacherProfile,
   ttimetable: Timetable, tnotices: Notices, tdirectory: Directory,
   adashboard: AdminDashboard, astudents: AdminStudents, ateachers: AdminTeachers,
   adepts: AdminDepartments, acourses: AdminCourses, aexams: AdminExams, atimetable: AdminTimetable,
