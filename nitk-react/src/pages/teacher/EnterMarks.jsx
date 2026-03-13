@@ -108,12 +108,8 @@ export default function EnterMarks() {
         <select value={courseIdx} onChange={(e) => { setCourseIdx(Number(e.target.value)); setMarks({}); setSaved(false); }}
           className="rounded-lg border border-[var(--bd2)] bg-[var(--s3)] px-4 py-2.5 font-body text-[13px] text-[var(--t1)] outline-none">
           {teacherCourses.map((c, i) => (
-            <option key={i} value={i}>{c.code || c.course_code} · {c.name || c.course_name}</option>
+            <option key={i} value={i}>{c.code || c.course_code} · {c.name || c.course_name} (Sec {c.section})</option>
           ))}
-        </select>
-        <select value={section} onChange={(e) => { setSection(e.target.value); setMarks({}); setSaved(false); }}
-          className="rounded-lg border border-[var(--bd2)] bg-[var(--s3)] px-4 py-2.5 font-body text-[13px] text-[var(--t1)] outline-none">
-          <option value="A">Section A</option><option value="B">Section B</option>
         </select>
         <div className="flex-1" />
         <Badge variant={filledCount === students.length ? 'green' : 'amber'}>{filledCount}/{students.length} filled</Badge>

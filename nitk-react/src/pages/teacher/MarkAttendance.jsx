@@ -113,14 +113,9 @@ export default function MarkAttendance() {
           className="rounded-lg border border-[var(--bd2)] bg-[var(--s3)] px-4 py-2.5 font-body text-[13px] text-[var(--t1)] outline-none">
           {teacherCourses.map((c, i) => (
             <option key={i} value={i}>
-              {c.code || c.course_code} · {c.name || c.course_name}
+              {c.code || c.course_code} · {c.name || c.course_name} (Sec {c.section})
             </option>
           ))}
-        </select>
-        <select value={section} onChange={(e) => { setSection(e.target.value); setAttendance({}); setSubmitted(false); }}
-          className="rounded-lg border border-[var(--bd2)] bg-[var(--s3)] px-4 py-2.5 font-body text-[13px] text-[var(--t1)] outline-none">
-          <option value="A">Section A</option>
-          <option value="B">Section B</option>
         </select>
         <input type="date" value={dateStr} onChange={(e) => { setDateStr(e.target.value); setSubmitted(false); }}
           className="rounded-lg border border-[var(--bd2)] bg-[var(--s3)] px-4 py-2.5 font-mono text-[13px] text-[var(--t1)] outline-none" />

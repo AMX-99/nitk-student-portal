@@ -33,7 +33,6 @@ router.patch('/courses/:id/progress', updateCourseProgress);
 router.post(
   '/attendance',
   [
-    body('course_id').isUUID(),
     body('academic_year').matches(/^\d{4}-\d{2}$/),
     body('semester').isInt({ min: 1, max: 8 }),
     body('date').isISO8601(),
