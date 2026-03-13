@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 export default function EnterMarks() {
   const { data: courses, loading: coursesLoading } = useApi(teacherApi.getCourses);
   const [courseIdx, setCourseIdx] = useState(0);
-  const [section, setSection] = useState('A');
+  const [section, setSection] = useState(null);
   const [marks, setMarks] = useState({});
   const [saved, setSaved] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -19,23 +19,23 @@ export default function EnterMarks() {
   const selectedCourse = teacherCourses[courseIdx] || {};
   const courseId = selectedCourse?.course_id || selectedCourse?.id || '';
 
-  // Ensure initial section is correct when courses load
+  // Set section from the teacher's actual course assignment whenever courses or courseIdx change
   useEffect(() => {
-    if (teacherCourses.length > 0 && section === 'A' && teacherCourses[0].section) {
-      setSection(teacherCourses[courseIdx]?.section || teacherCourses[0].section);
+    if (teacherCourses.length > 0) {
+      setSection(teacherCourses[courseIdx]?.section || teacherCourses[0]?.section || null);
     }
-  }, [courses]);
+  }, [courses, courseIdx]);
 
   const fetchStudents = useCallback(() => {
-    if (!courseId) return Promise.resolve([]);
+    if (!courseId || !section || !selectedCourse?.academic_year) return Promise.resolve([]);
     return teacherApi.getCourseStudents(courseId, {
-      academic_year: '2024-25',
-      semester: selectedCourse?.semester || 5,
+      academic_year: selectedCourse.academic_year,
+      semester: selectedCourse.semester,
       section,
     });
-  }, [courseId, section, selectedCourse?.semester]);
+  }, [courseId, section, selectedCourse?.academic_year, selectedCourse?.semester]);
 
-  const { data: apiStudents, loading: studentsLoading } = useApi(fetchStudents, [courseId, section]);
+  const { data: apiStudents, loading: studentsLoading } = useApi(fetchStudents, [courseId, section, selectedCourse?.academic_year, selectedCourse?.semester]);
   const students = apiStudents || [];
 
   const maxInt = 40;
@@ -88,8 +88,8 @@ export default function EnterMarks() {
       });
       await teacherApi.enterMarks({
         course_id: courseId,
-        academic_year: '2024-25',
-        semester: selectedCourse?.semester || 5,
+        academic_year: selectedCourse.academic_year,
+        semester: selectedCourse.semester,
         section,
         marks: marksData,
       });

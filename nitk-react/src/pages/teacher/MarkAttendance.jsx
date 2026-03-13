@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function MarkAttendance() {
   const { data: courses, loading: coursesLoading } = useApi(teacherApi.getCourses);
   const [courseIdx, setCourseIdx] = useState(0);
-  const [section, setSection] = useState('A');
+  const [section, setSection] = useState(null);
   const [dateStr, setDateStr] = useState(new Date().toISOString().split('T')[0]);
   const [attendance, setAttendance] = useState({});
   const [submitted, setSubmitted] = useState(false);
@@ -19,23 +19,23 @@ export default function MarkAttendance() {
   const selectedCourse = teacherCourses[courseIdx] || teacherCourses[0] || {};
   const courseId = selectedCourse?.course_id || selectedCourse?.id || '';
 
-  // Ensure initial section is correct when courses load
+  // Set section from the teacher's actual course assignment whenever courses or courseIdx change
   useEffect(() => {
-    if (teacherCourses.length > 0 && section === 'A' && teacherCourses[0].section) {
-      setSection(teacherCourses[courseIdx]?.section || teacherCourses[0].section);
+    if (teacherCourses.length > 0) {
+      setSection(teacherCourses[courseIdx]?.section || teacherCourses[0]?.section || null);
     }
-  }, [courses]);
+  }, [courses, courseIdx]);
 
   const fetchStudents = useCallback(() => {
-    if (!courseId) return Promise.resolve([]);
+    if (!courseId || !section || !selectedCourse?.academic_year) return Promise.resolve([]);
     return teacherApi.getCourseStudents(courseId, {
-      academic_year: '2024-25',
-      semester: selectedCourse?.semester || 5,
+      academic_year: selectedCourse.academic_year,
+      semester: selectedCourse.semester,
       section,
     });
-  }, [courseId, section, selectedCourse?.semester]);
+  }, [courseId, section, selectedCourse?.academic_year, selectedCourse?.semester]);
 
-  const { data: apiStudents, loading: studentsLoading, error: studentsError } = useApi(fetchStudents, [courseId, section, selectedCourse?.semester]);
+  const { data: apiStudents, loading: studentsLoading, error: studentsError } = useApi(fetchStudents, [courseId, section, selectedCourse?.academic_year, selectedCourse?.semester]);
   const students = apiStudents || [];
 
   // Initialize attendance when students change
@@ -83,8 +83,8 @@ export default function MarkAttendance() {
 
       await teacherApi.markAttendance({
         course_id: courseId,
-        academic_year: '2024-25',
-        semester: selectedCourse?.semester || 5,
+        academic_year: selectedCourse.academic_year,
+        semester: selectedCourse.semester,
         section,
         date: dateStr,
         records,
@@ -110,7 +110,7 @@ export default function MarkAttendance() {
         <select value={courseIdx} onChange={(e) => {
           const idx = Number(e.target.value);
           setCourseIdx(idx);
-          setSection(teacherCourses[idx]?.section || 'A');
+          setSection(teacherCourses[idx]?.section || null);
           setAttendance({});
           setSubmitted(false);
         }}
