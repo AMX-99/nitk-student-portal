@@ -27,15 +27,11 @@ export default function EnterMarks() {
   }, [courses, courseIdx]);
 
   const fetchStudents = useCallback(() => {
-    if (!courseId || !section || !selectedCourse?.academic_year) return Promise.resolve([]);
-    return teacherApi.getCourseStudents(courseId, {
-      academic_year: selectedCourse.academic_year,
-      semester: selectedCourse.semester,
-      section,
-    });
-  }, [courseId, section, selectedCourse?.academic_year, selectedCourse?.semester]);
+    if (!courseId || !section) return Promise.resolve([]);
+    return teacherApi.getCourseStudents(courseId, { section });
+  }, [courseId, section]);
 
-  const { data: apiStudents, loading: studentsLoading } = useApi(fetchStudents, [courseId, section, selectedCourse?.academic_year, selectedCourse?.semester]);
+  const { data: apiStudents, loading: studentsLoading } = useApi(fetchStudents, [courseId, section]);
   const students = apiStudents || [];
 
   const maxInt = 40;
