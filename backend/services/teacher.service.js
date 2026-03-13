@@ -18,11 +18,13 @@ export const getTeacherByAuthId = async (authId) => {
   return data.id;
 };
 
-export const verifyTeacherAssignment = async (teacherId, courseId, section) => {
+export const verifyTeacherAssignment = async (teacherId, courseId, academicYear, semester, section) => {
   const { data, error } = await supabaseAdmin.from('teacher_courses')
     .select('id')
     .eq('teacher_id', teacherId)
     .eq('course_id', courseId)
+    .eq('academic_year', academicYear)
+    .eq('semester', semester)
     .eq('section', section)
     .maybeSingle();
   if (error) throw error;
@@ -94,7 +96,7 @@ export const getCourseStudents = async (courseId, section) => {
   const { data, error } = await supabaseAdmin.from('enrollments')
     .select(`
       student_id,
-      students (
+      student:students (
         *
       )
     `)
@@ -263,22 +265,26 @@ export const getCourseBaseDetails = async (courseId) => {
   return data;
 };
 
-export const getTeacherProgress = async (teacherId, courseId, section) => {
+export const getTeacherProgress = async (teacherId, courseId, academicYear, semester, section) => {
   const { data, error } = await supabaseAdmin.from('teacher_courses')
     .select('syllabus_progress')
     .eq('teacher_id', teacherId)
     .eq('course_id', courseId)
+    .eq('academic_year', academicYear)
+    .eq('semester', semester)
     .eq('section', section)
     .maybeSingle();
   if (error) throw error;
   return data?.syllabus_progress || null;
 };
 
-export const updateTeacherProgress = async (teacherId, courseId, section, progress) => {
+export const updateTeacherProgress = async (teacherId, courseId, academicYear, semester, section, progress) => {
   const { data, error } = await supabaseAdmin.from('teacher_courses')
     .update({ syllabus_progress: progress })
     .eq('teacher_id', teacherId)
     .eq('course_id', courseId)
+    .eq('academic_year', academicYear)
+    .eq('semester', semester)
     .eq('section', section)
     .select('syllabus_progress')
     .single();

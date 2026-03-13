@@ -98,7 +98,7 @@ export const getCourseDetails = async (req, res, next) => {
       const teacher = await teacherService.getTeacherByAuthId(req.user.id);
       if (teacher) {
         progress = await teacherService.getTeacherProgress(
-          teacher.id, id, section
+          teacher.id, id, academic_year, semester, section
         );
       }
     }
@@ -124,14 +124,14 @@ export const updateCourseProgress = async (req, res, next) => {
     if (!teacher) return res.status(404).json({ error: 'Teacher not found' });
     const isAssigned = await teacherService.verifyTeacherAssignment(
       teacher.id,
-      id, section
+      id, academic_year, semester, section
     );
     if (!isAssigned) {
       return res.status(403).json({ error: 'You are not assigned to this course section' });
     }
     const updatedProgress = await teacherService.updateTeacherProgress(
       teacher.id,
-      id, section, progress
+      id, academic_year, semester, section, progress
     );
     res.json({ data: { progress: updatedProgress } });
   } catch (err) {
