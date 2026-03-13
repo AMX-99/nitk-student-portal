@@ -39,8 +39,9 @@ export default function Results() {
       </motion.div>
 
       <motion.div className="flex items-center gap-2" variants={stagger.item}>
-        {(cgpaTrend.length > 0 ? cgpaTrend : Array.from({length: 8}, (_, i) => ({sem: `Sem ${i+1}`}))).map((s, i) => {
-          const semNum = i + 1;
+        {(cgpaTrend.length > 0 ? cgpaTrend : Array.from({length: 8}, (_, i) => ({sem: `Sem ${i+1}`}))).map((s) => {
+          // Extra step: parse the number correctly. s.sem is formatted as "Sem X"
+          const semNum = parseInt(s.sem.replace('Sem ', ''), 10);
           return (
             <motion.button
               key={semNum}
