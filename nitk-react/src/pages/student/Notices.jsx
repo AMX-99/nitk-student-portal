@@ -23,11 +23,11 @@ export default function Notices() {
     time: n.created_at ? new Date(n.created_at).toLocaleDateString() : '',
     priority: n.is_pinned ? 'urgent' : 'normal',
     pinned: n.is_pinned || false,
-    body: n.body || n.content || '',
+    content: n.content || n.body || '',
   }));
 
   const filtered = allNotices.filter((n) => {
-    const matchSearch = n.title.toLowerCase().includes(search.toLowerCase()) || n.body.toLowerCase().includes(search.toLowerCase());
+    const matchSearch = n.title.toLowerCase().includes(search.toLowerCase()) || n.content.toLowerCase().includes(search.toLowerCase());
     const matchCat = category === 'All' || n.dept === category;
     const matchPri = priorityFilter === 'All' || n.priority === priorityFilter;
     return matchSearch && matchCat && matchPri;
@@ -123,7 +123,7 @@ export default function Notices() {
                       className="overflow-hidden"
                     >
                       <p className="rounded-lg bg-[var(--s3)] p-3.5 text-[12.5px] leading-relaxed text-[var(--t2)]">
-                        {n.body}
+                        {n.content}
                       </p>
                     </motion.div>
                   </div>

@@ -32,7 +32,7 @@ export default function TeacherDashboard() {
     dept: n.target_department_name || 'General',
     time: n.created_at ? new Date(n.created_at).toLocaleDateString() : '',
     pinned: n.is_pinned,
-    body: n.body || n.content || '',
+    content: n.content || n.body || '',
   }));
 
   if (loading) return <LoadingState message="Loading dashboard..." />;

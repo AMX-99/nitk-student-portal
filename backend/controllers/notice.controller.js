@@ -46,6 +46,10 @@ export const createNotice = async (req, res, next) => {
       posted_by: id,
       posted_by_role: role
     };
+    if (noticeData.body && !noticeData.content) {
+      noticeData.content = noticeData.body;
+      delete noticeData.body;
+    }
     const notice = await noticeService.createNotice(noticeData);
     res.status(201).json({ data: notice });
   } catch (err) {

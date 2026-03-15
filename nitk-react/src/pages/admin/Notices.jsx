@@ -15,7 +15,7 @@ export default function AdminNotices() {
   const [editing, setEditing] = useState(null);
   const [expandedId, setExpandedId] = useState(null);
   const [formData, setFormData] = useState({
-    title: '', body: '', priority: 'normal', is_pinned: false,
+    title: '', content: '', priority: 'normal', is_pinned: false,
     target_department_id: '', target_semester: '',
   });
   const [submitting, setSubmitting] = useState(false);
@@ -25,7 +25,7 @@ export default function AdminNotices() {
   const highCount = allNotices.filter(n => n.priority === 'high').length;
 
   const resetForm = () => {
-    setFormData({ title: '', body: '', priority: 'normal', is_pinned: false, target_department_id: '', target_semester: '' });
+    setFormData({ title: '', content: '', priority: 'normal', is_pinned: false, target_department_id: '', target_semester: '' });
     setEditing(null);
   };
 
@@ -33,7 +33,7 @@ export default function AdminNotices() {
   const handleOpenEdit = (n) => {
     setEditing(n);
     setFormData({
-      title: n.title || '', body: n.body || '', priority: n.priority || 'normal',
+      title: n.title || '', content: n.content || n.body || '', priority: n.priority || 'normal',
       is_pinned: n.is_pinned || false, target_department_id: n.target_department_id || '',
       target_semester: n.target_semester || '',
     });
@@ -126,7 +126,7 @@ export default function AdminNotices() {
                   {expandedId === n.id && (
                     <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
                       className="mt-3 overflow-hidden border-t border-[var(--bd1)] pt-3">
-                      <p className="text-[13px] text-[var(--t2)] whitespace-pre-wrap">{n.body}</p>
+                      <p className="text-[13px] text-[var(--t2)] whitespace-pre-wrap">{n.content || n.body}</p>
                       {n.expires_at && (
                         <p className="mt-2 text-[11px] text-[var(--t3)]">Expires: {new Date(n.expires_at).toLocaleDateString()}</p>
                       )}
@@ -147,8 +147,8 @@ export default function AdminNotices() {
               className="w-full rounded-md border border-[var(--bd1)] bg-[var(--s3)] px-3 py-2 text-[13px] outline-none focus:border-orange" />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] font-semibold uppercase text-[var(--t3)]">Body</label>
-            <textarea required rows={5} value={formData.body} onChange={e => setFormData({...formData, body: e.target.value})}
+            <label className="text-[11px] font-semibold uppercase text-[var(--t3)]">Content</label>
+            <textarea required rows={5} value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})}
               className="w-full rounded-md border border-[var(--bd1)] bg-[var(--s3)] px-3 py-2 text-[13px] outline-none focus:border-orange resize-none" />
           </div>
           <div className="grid grid-cols-3 gap-4">

@@ -33,12 +33,12 @@ export default function Dashboard({ setPage }) {
     author: n.author_name || n.posted_by_role || 'Admin',
     time: n.created_at ? new Date(n.created_at).toLocaleDateString() : '',
     pinned: n.is_pinned,
-    body: n.body || n.content || '',
+    content: n.content || n.body || '',
   }));
 
   // Fallback notices if API returns empty
   const displayNotices = recentNotices.length > 0 ? recentNotices : [
-    { title: 'No recent notices', author: '', time: '', pinned: false, body: 'Check back later for updates.' },
+    { title: 'No recent notices', author: '', time: '', pinned: false, content: 'Check back later for updates.' },
   ];
 
   const fee = feeData || {};
@@ -195,7 +195,7 @@ export default function Dashboard({ setPage }) {
                   {n.pinned && <Badge variant="orange">Pinned</Badge>}
                   <span>{n.author}{n.time ? ` · ${n.time}` : ''}</span>
                 </div>
-                {n.body && <p className="mt-2 text-[12px] leading-relaxed text-[var(--t2)]">{n.body.slice(0, 120)}{n.body.length > 120 ? '...' : ''}</p>}
+                {n.content && <p className="mt-2 text-[12px] leading-relaxed text-[var(--t2)]">{n.content.slice(0, 120)}{n.content.length > 120 ? '...' : ''}</p>}
               </motion.div>
             ))}
           </CardBody>
