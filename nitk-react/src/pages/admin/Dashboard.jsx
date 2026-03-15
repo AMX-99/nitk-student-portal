@@ -141,17 +141,7 @@ export default function AdminDashboard() {
           </CardBody>
         </Card>
 
-        <Card>
-          <CardHeader><h3 className="font-display text-[15px] font-bold">🕐 Recent Activity</h3><PulseDot color="var(--color-green)" /></CardHeader>
-          <CardBody className="space-y-0 p-0!">
-            {recentActions.length > 0 ? recentActions.map((a, i) => (
-              <motion.div key={i} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.08, type: 'spring', damping: 20 }}
-                whileHover={{ x: 4 }} className="border-b border-[var(--bd1)] px-5 py-3 last:border-b-0 cursor-pointer">
-                <div className="flex items-start gap-2.5"><span className="text-base">{a.icon}</span><div><p className="text-[12.5px] text-[var(--t1)]">{a.text}</p><p className="mt-0.5 text-[10.5px] text-[var(--t3)]">{a.time}</p></div></div>
-              </motion.div>
-            )) : <p className="py-8 text-center text-[12px] text-[var(--t3)]">No recent activity</p>}
-          </CardBody>
-        </Card>
+        
       </motion.div>
     </motion.div>
   );
