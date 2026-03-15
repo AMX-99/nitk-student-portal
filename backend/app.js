@@ -20,7 +20,7 @@ const limiter = ratelimit({
     legacyHeaders: false,
 });
 
-app.use(cors({origin: process.env.CLIENT_URL || '*'}));
+app.use(cors({origin: 'https://nitk-student-portal-5dze.vercel.app' || '*', credentials: true}));
 app.use(helmet());
 app.use(express.json({limit: '10mb'}));   //request size
 
