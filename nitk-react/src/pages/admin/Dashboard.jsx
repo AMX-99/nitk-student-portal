@@ -87,7 +87,7 @@ export default function AdminDashboard() {
           </CardBody>
         </Card>
 
-        <Card>
+        {/* <Card>
           <CardHeader><h3 className="font-display text-[15px] font-bold">💰 Fee Collection Trend</h3><Badge variant="green">Recent</Badge></CardHeader>
           <CardBody>
             {feeCollection.length > 0 ? (
@@ -108,7 +108,7 @@ export default function AdminDashboard() {
               </ResponsiveContainer>
             ) : <p className="py-8 text-center text-[13px] text-[var(--t3)]">No collection data yet</p>}
           </CardBody>
-        </Card>
+        </Card> */}
       </motion.div>
 
       <motion.div className="grid grid-cols-[1fr_340px] gap-5" variants={stagger.item}>
