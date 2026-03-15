@@ -29,13 +29,13 @@ router.post('/login', async (req, res, next) => {
       console.error('Login error from Supabase:', error);
       throw error;
     }
-    
+
     if (data.user) {
       const role = await getUserRole(data.user.id);
       if (!data.user.user_metadata) data.user.user_metadata = {};
       data.user.user_metadata.role = role;
     }
-    
+
     res.json(data); // contains user, session, access_token, refresh_token
   } catch (err) {
     console.error('Final login process error:', err);
@@ -103,7 +103,7 @@ router.get('/me', async (req, res, next) => {
   try {
     const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
     if (error) throw error;
-    
+
     if (user) {
       const role = await getUserRole(user.id);
       if (!user.user_metadata) user.user_metadata = {};

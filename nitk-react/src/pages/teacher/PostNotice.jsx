@@ -74,7 +74,7 @@ export default function PostNotice() {
                 <span className={`normal-case tracking-normal ${charCount > maxChars ? 'text-red' : ''}`}>{charCount}/{maxChars}</span>
               </label>
               <motion.textarea placeholder="Write the notice content here..." rows={6} value={body}
-                onChange={(e) => { if (e.target.value.length <= maxChars) { setBody(e.target.value); setPosted(false); }}}
+                onChange={(e) => { if (e.target.value.length <= maxChars) { setBody(e.target.value); setPosted(false); } }}
                 animate={shakeFields.body ? { x: [0, -8, 8, -6, 6, 0] } : {}} transition={{ duration: 0.4 }}
                 className={`w-full resize-none rounded-lg border bg-[var(--s3)] px-4 py-2.5 font-body text-[13px] leading-relaxed text-[var(--t1)] outline-none transition-colors ${shakeFields.body ? 'border-red!' : 'border-[var(--bd2)] focus:border-orange'}`} />
             </div>

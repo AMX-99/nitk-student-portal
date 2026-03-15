@@ -91,7 +91,7 @@ export const getCourseDetails = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { section, academic_year, semester } = req.query;
-    const course = await teacherService.getCourseBaseDetails(id);
+    const course = await teacherService.getCourseBaseDetails(id, academic_year, semester);
     if (!course) return res.status(404).json({ error: 'Course not found' });
     let progress = null;
     if (req.user.role === 'teacher' && section && academic_year && semester) {

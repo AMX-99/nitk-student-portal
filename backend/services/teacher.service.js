@@ -132,7 +132,7 @@ export const getCourseStudents = async (courseId, section) => {
 
 export const markAttendance = async (authId, courseId, academicYear, semester, section, date, records) => {
   const teacherId = await getTeacherId(authId);
-  await verifyTeacherAssignment(teacherId, courseId, section);
+  await verifyTeacherAssignment(teacherId, courseId, academicYear, semester, section);
   // Fetch existing attendance to get their IDs
   const { data: existing } = await supabaseAdmin.from('attendance')
     .select('id, student_id')
@@ -172,7 +172,7 @@ export const markAttendance = async (authId, courseId, academicYear, semester, s
 
 export const enterMarks = async (authId, courseId, academicYear, semester, section, marks) => {
   const teacherId = await getTeacherId(authId);
-  await verifyTeacherAssignment(teacherId, courseId, section);
+  await verifyTeacherAssignment(teacherId, courseId, academicYear, semester, section);
   // Fetch existing results to get their IDs
   const { data: existing } = await supabaseAdmin.from('results')
     .select('id, student_id')
@@ -256,12 +256,22 @@ export const getCourseResults = async (courseId, academicYear, semester, section
   });
 };
 
-export const getCourseBaseDetails = async (courseId) => {
+export const getCourseBaseDetails = async (courseId, academicYear, semester) => {
   const { data, error } = await supabaseAdmin.from('courses')
     .select('*')
     .eq('id', courseId)
     .single();
   if (error) throw error;
+
+  if (academicYear && semester) {
+    const { count } = await supabaseAdmin.from('enrollments')
+      .select('*', { count: 'exact', head: true })
+      .eq('course_id', courseId)
+      .eq('academic_year', academicYear)
+      .eq('semester', semester);
+    data.total_course_students = count || 0;
+  }
+
   return data;
 };
 

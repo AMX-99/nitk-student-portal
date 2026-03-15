@@ -148,7 +148,7 @@ export default function CourseMgmt({ setPage }) {
                         {[
                           { label: 'Course Name', value: active.name },
                           { label: 'Course Code', value: active.code },
-                          { label: 'Total Students', value: active.students.toString() },
+                          { label: 'Total Students', value: (courseDetail?.total_course_students ?? active.students).toString() },
                           { label: 'Credits', value: active.credits.toString() },
                           { label: 'Section', value: active.section },
                           { label: 'Academic Year', value: active.academic_year },
