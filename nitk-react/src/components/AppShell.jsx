@@ -81,7 +81,7 @@ export default function AppShell({ role, page, setPage, onLogout, onThemeToggle,
       <aside className="flex h-screen w-[222px] shrink-0 flex-col border-r border-[var(--bd1)] bg-[var(--s1)]">
         <div className="flex items-center gap-2.5 border-b border-[var(--bd1)] px-5 py-4">
           <img src="/nitk-logo.jpeg" alt="NIT Logo" className="h-7 w-7 rounded-sm object-cover" />
-          <h2 className="bg-gradient-to-r from-orange to-amber bg-clip-text font-display text-[15px] font-extrabold text-transparent">NITK</h2>
+          <h2 className="bg-gradient-to-r from-orange to-amber bg-clip-text font-display text-[15px] font-extrabold text-transparent">NIT KKR</h2>
         </div>
         <div className="flex items-center gap-2.5 border-b border-[var(--bd1)] px-5 py-4">
           <Avatar initials={displayUser.initials} color={displayUser.color} size="md" src={displayUser.src} />
