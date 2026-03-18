@@ -92,7 +92,7 @@ export const getTeacherCourses = async (authId) => {
   return coursesWithStats;
 };
 
-export const getCourseStudents = async (courseId, section, academic_year, semester) => {
+export const getCourseStudents = async (courseId, section) => {
   let query = supabaseAdmin
     .from('enrollments')
     .select(`
@@ -100,9 +100,7 @@ export const getCourseStudents = async (courseId, section, academic_year, semest
       student:students (*)
     `)
     .eq('course_id', courseId)
-    .eq('section', section)
-    .eq('academic_year', academic_year)   // string → OK
-    .eq('semester', Number(semester));
+    .eq('section', section);
 
   const { data, error } = await query;
 

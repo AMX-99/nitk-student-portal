@@ -31,11 +31,11 @@ export const getMyCourses = async (req, res, next) => {
 export const getCourseStudents = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { section, academic_year, semester } = req.query;
+    const { section} = req.query;
     if (!section)  {
       return res.status(400).json({ error: 'section required' });
     }
-    const students = await teacherService.getCourseStudents(id, section,academic_year, semester);
+    const students = await teacherService.getCourseStudents(id, section);
     res.json({ data: students });
   } catch (err) {
     next(err);
