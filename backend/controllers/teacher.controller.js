@@ -32,7 +32,7 @@ export const getCourseStudents = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { section, academic_year, semester } = req.query;
-    if (!section || !academic_year || !semester)  {
+    if (!section)  {
       return res.status(400).json({ error: 'section required' });
     }
     const students = await teacherService.getCourseStudents(id, section, section, academic_year, semester);

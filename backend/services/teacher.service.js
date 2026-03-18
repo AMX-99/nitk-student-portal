@@ -93,20 +93,29 @@ export const getTeacherCourses = async (authId) => {
 };
 
 export const getCourseStudents = async (courseId, section, academic_year, semester) => {
-  const { data, error } = await supabaseAdmin.from('enrollments')
+  let query = supabaseAdmin
+    .from('enrollments')
     .select(`
       student_id,
-      student:students (
-        *
-      )
+      student:students (*)
     `)
     .eq('course_id', courseId)
-    .eq('section', section)
-    .eq('academic_year', academic_year)
-    .eq('semester', semester);
+    .eq('section', section);
 
-  if (error) throw error;
+  if (academic_year) {
+    query = query.eq('academic_year', academic_year);
+  }
 
+  if (semester) {
+    query = query.eq('semester', semester);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error(error);
+    throw error;
+  }
   const validData = data.filter(item => item.student);
 
   validData.sort((a, b) => {
