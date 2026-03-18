@@ -100,15 +100,9 @@ export const getCourseStudents = async (courseId, section, academic_year, semest
       student:students (*)
     `)
     .eq('course_id', courseId)
-    .eq('section', section);
-
-  if (academic_year) {
-    query = query.eq('academic_year', academic_year);
-  }
-
-  if (semester) {
-    query = query.eq('semester', semester);
-  }
+    .eq('section', section)
+    .eq('academic_year', academic_year)   // string → OK
+    .eq('semester', Number(semester));
 
   const { data, error } = await query;
 

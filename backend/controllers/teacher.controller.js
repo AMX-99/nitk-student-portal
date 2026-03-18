@@ -35,7 +35,7 @@ export const getCourseStudents = async (req, res, next) => {
     if (!section)  {
       return res.status(400).json({ error: 'section required' });
     }
-    const students = await teacherService.getCourseStudents(id, section, section, academic_year, semester);
+    const students = await teacherService.getCourseStudents(id, section,academic_year, semester);
     res.json({ data: students });
   } catch (err) {
     next(err);
