@@ -49,7 +49,6 @@ export const getMyTimetable = async (req, res, next) => {
       const { academic_year, semester } = assignments[0];
       query = query
         .eq('semester', semester)
-        .eq('academic_year', academic_year)
         .eq('teacher_id', teacher.id);
     } 
     else {
