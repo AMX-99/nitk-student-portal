@@ -92,7 +92,7 @@ export const getTeacherCourses = async (authId) => {
   return coursesWithStats;
 };
 
-export const getCourseStudents = async (courseId, section) => {
+export const getCourseStudents = async (courseId, section, academic_year, semester) => {
   const { data, error } = await supabaseAdmin.from('enrollments')
     .select(`
       student_id,
@@ -101,31 +101,27 @@ export const getCourseStudents = async (courseId, section) => {
       )
     `)
     .eq('course_id', courseId)
-    .eq('section', section);
+    .eq('section', section)
+    .eq('academic_year', academic_year)
+    .eq('semester', semester);
+
   if (error) throw error;
 
-  // Sort manually by roll_no
-  const validData = data.filter(item => {
-    const s = Array.isArray(item.students) ? item.students[0] : (item.students || item.student);
-    return s != null;
-  });
+  const validData = data.filter(item => item.student);
 
   validData.sort((a, b) => {
-    const studentA = Array.isArray(a.students) ? a.students[0] : (a.students || a.student);
-    const studentB = Array.isArray(b.students) ? b.students[0] : (b.students || b.student);
-    const rA = studentA?.roll_no || '';
-    const rB = studentB?.roll_no || '';
-    return rA.localeCompare(rB);
+    return (a.student.roll_no || '').localeCompare(b.student.roll_no || '');
   });
 
-  return validData.map((item) => {
-    const student = Array.isArray(item.students) ? item.students[0] : (item.students || item.student);
+  return validData.map(item => {
+    const s = item.student;
+
     return {
       id: item.student_id,
-      name: student?.name || (student?.first_name ? `${student.first_name} ${student.last_name || ''}`.trim() : ''),
-      roll_no: student?.roll_no,
-      email: student?.email,
-      ...student,
+      name: s.name || `${s.first_name || ''} ${s.last_name || ''}`.trim(),
+      roll_no: s.roll_no,
+      email: s.email,
+      ...s
     };
   });
 };

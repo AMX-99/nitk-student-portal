@@ -28,7 +28,11 @@ export default function EnterMarks() {
 
   const fetchStudents = useCallback(() => {
     if (!courseId || !section) return Promise.resolve([]);
-    return teacherApi.getCourseStudents(courseId, { section });
+    return teacherApi.getCourseStudents(courseId, {
+      section,
+      academic_year: selectedCourse.academic_year,
+      semester: selectedCourse.semester
+    });
   }, [courseId, section]);
 
   const { data: apiStudents, loading: studentsLoading } = useApi(fetchStudents, [courseId, section]);
